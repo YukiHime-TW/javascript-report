@@ -1,0 +1,43 @@
+= 樂透Servlet改成SpringMVC、登入功能及 Postman/cURL 用途簡易說明
+
+== 預設登入帳號密碼
+帳號: `test` +
+密碼: `test` +
+連結: http://localhost:8080/work1/login
+
+== 使用方法
+請在 STS 中使用 `Run as JavaApplication` 並執行內嵌的 Tomcat。
+
+== Postman
+一個能模擬 HTTP Request 的工具，其中包含常見的請求方法：
+
+* `POST`
+* `GET`
+* `PUT`
+* `DELETE`
+
+主要功能是能夠快速測試 API 是否能正常請求資料並回傳正確的資料。
+
+== cURL
+可以使用 cURL 自動執行文件傳輸等類似的一系列操作：
+
+* **模擬客戶端請求**  +
+  cURL 允許用戶模擬各種客戶端請求，從而測試 API 在不同場景下的行為。這種模擬有助於確保 API 在不同情況下的正常運作。  
+  例如:
+----
+  curl -X GET "https://api.example.com/data"
+----
+
+* **處理複雜的請求參數**  +
+  允許用戶通過命令行參數來設置請求的各種參數，包含查詢參數、標頭、cookie、身分驗證訊息。  
+  例如:
+----
+  curl -X GET "https://api.example.com/data" -H "Authorization: Bearer token" -H "Accept: application/json" -b "session_id=abc123"
+----
+
+* **導入與導出請求**  +
+  使用戶能夠將請求導入或導出到所需的應用程式或平台，用於紀錄與重現測試場景。  
+  例如:
+----
+  curl -K request.txt
+----
