@@ -1,6 +1,6 @@
 # 各區塊負責人: (請補上自己的姓名)
 
-01 : 變數與作用域 + IIFE  
+01 柯昕翰: 變數與作用域 + IIFE  
 02 : XMLHttpRequest/fetch、Arrow Function  
 03 : try…​catch 與非同步、this  
 08 葉之宇: Promise、async/await、總整理  
