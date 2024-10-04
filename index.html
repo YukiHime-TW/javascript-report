@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.22">
-<title>樂透Servlet改成SpringMVC、登入功能及 Postman/cURL 用途簡易說明</title>
+<title>JavaScript、函式、非同步</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,108 +436,105 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>樂透Servlet改成SpringMVC、登入功能及 Postman/cURL 用途簡易說明</h1>
+<h1>JavaScript、函式、非同步</h1>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_預設登入帳號密碼">預設登入帳號密碼</h2>
+<h2 id="_運算相關">運算相關</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>帳號: <code>test</code><br>
-密碼: <code>test</code><br>
-連結: <a href="http://localhost:8080/work1/login" class="bare">http://localhost:8080/work1/login</a></p>
+<div class="sect2">
+<h3 id="_ternary_operator">Ternary Operator</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_nullish_coalescing_operatorassignment">Nullish Coalescing Operator/Assignment</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_falsy">Falsy</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_custom_error">Custom Error</h3>
+
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_使用方法">使用方法</h2>
+<h2 id="_變數與作用域">變數與作用域</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>請在 STS 中使用 <code>Run as JavaApplication</code> 並執行內嵌的 Tomcat。</p>
+<div class="sect2">
+<h3 id="_varletconst_差異">var/let/const 差異</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_hoisting">Hoisting</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_temporal_dead_zone_tdz">Temporal Dead Zone, TDZ</h3>
+
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_postman">Postman</h2>
+<h2 id="_函式">函式</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>一個能模擬 HTTP Request 的工具，其中包含常見的請求方法：</p>
+<div class="sect2">
+<h3 id="_immediately_invoked_function_expression_iife">Immediately Invoked Function Expression, IIFE</h3>
+
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>POST</code></p>
-</li>
-<li>
-<p><code>GET</code></p>
-</li>
-<li>
-<p><code>PUT</code></p>
-</li>
-<li>
-<p><code>DELETE</code></p>
-</li>
-</ul>
+<div class="sect2">
+<h3 id="_高階函式_higher_order_function">高階函式 Higher-Order Function</h3>
+
 </div>
-<div class="paragraph">
-<p>主要功能是能夠快速測試 API 是否能正常請求資料並回傳正確的資料。</p>
+<div class="sect2">
+<h3 id="_閉包_closure">閉包 Closure</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_this">this</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_arrow_function">Arrow Function</h3>
+
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_curl">cURL</h2>
+<h2 id="_非同步">非同步</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>可以使用 cURL 自動執行文件傳輸等類似的一系列操作：</p>
+<div class="sect2">
+<h3 id="_同步非同步差異">同步/非同步差異</h3>
+
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>模擬客戶端請求</strong> <br>
-cURL 允許用戶模擬各種客戶端請求，從而測試 API 在不同場景下的行為。這種模擬有助於確保 API 在不同情況下的正常運作。
-例如:</p>
-</li>
-</ul>
+<div class="sect2">
+<h3 id="_xmlhttprequestfetch">XMLHttpRequest/fetch</h3>
+
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>  curl -X GET "https://api.example.com/data"</pre>
+<div class="sect2">
+<h3 id="_ajax">AJAX</h3>
+
 </div>
+<div class="sect2">
+<h3 id="_promise">Promise</h3>
+
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>處理複雜的請求參數</strong> <br>
-允許用戶通過命令行參數來設置請求的各種參數，包含查詢參數、標頭、cookie、身分驗證訊息。
-例如:</p>
-</li>
-</ul>
+<div class="sect2">
+<h3 id="_asyncawait">async/await</h3>
+
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>  curl -X GET "https://api.example.com/data" -H "Authorization: Bearer token" -H "Accept: application/json" -b "session_id=abc123"</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>導入與導出請求</strong> <br>
-使用戶能夠將請求導入或導出到所需的應用程式或平台，用於紀錄與重現測試場景。
-例如:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>  curl -K request.txt</pre>
-</div>
+<div class="sect2">
+<h3 id="_trycatch_與非同步">try…​catch 與非同步</h3>
+
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-04 13:23:18 +0800
+Last updated 2024-10-04 13:53:17 +0800
 </div>
 </div>
 </body>
