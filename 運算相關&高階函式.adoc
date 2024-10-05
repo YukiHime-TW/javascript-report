@@ -14,7 +14,7 @@
 [js]
 ----
 var age = 26;
-var beverage = age >= 21 ? "Beer" : "Juice";
+var beverage = age >= 18 ? "Beer" : "Juice";
 console.log(beverage); // "Beer"
 ----
 
@@ -36,21 +36,36 @@ console.log(greeting(null)); // "Howdy, stranger"
 
 [js]
 ----
-function example(…) {
-    return condition1 ? value1
-         : condition2 ? value2
-         : condition3 ? value3
-         : value4;
+let score = 85;
+
+let grade = score >= 90 ? "A"
+            : score >= 80 ? "B"
+            : score >= 70 ? "C"
+            : score >= 60 ? "D"
+            : "F";
+
+console.log(grade); // "B"
+----
+
+上述程式碼相當於下列if...else if...else
+[js]
+----
+let score = 85;
+let grade;
+
+if (score >= 90) {
+  grade = "A";
+} else if (score >= 80) {
+  grade = "B";
+} else if (score >= 70) {
+  grade = "C";
+} else if (score >= 60) {
+  grade = "D";
+} else {
+  grade = "F";
 }
 
-// Equivalent to:
-
-function example(…) {
-    if (condition1) { return value1; }
-    else if (condition2) { return value2; }
-    else if (condition3) { return value3; }
-    else { return value4; }
-}
+console.log(grade); // "B"
 ----
 
 
@@ -94,6 +109,107 @@ age ??= 18;
 console.log(age); // 輸出 0
 ----
 
+=== (??) 與 (||)
+
+||是與??相似的運算子，皆會檢查左側運算元決定要返回的值，不同的是??只會檢查運算元是否為null或nudefined，而||則是檢查運算元是否為假值(Falsy)
+
+=== 簡單範例
+[js]
+----
+let value1 = 0;
+let result1 = value1 ?? 10; // ??檢查null或undefined
+let result2 = value1 || 10; // ||檢查Falsy
+
+console.log(result1); // 輸出0
+console.log(result2); // 輸出10
+----
+
+上述範例中由於??只會檢查null或undefined，因此輸出結果依然是1，而||會檢查Falsy，由於0是屬於Falsy，所以會賦予右側的值給result2，結果輸出就會是10
+
 == Falsy
+在 JavaScript 中，Falsy 值是指在布林值轉換時會被判定為 false 的值。當在需要布林值的地方（如條件判斷）使用這些值時，皆會被視為 false。
+
+=== 會被視為Falsy的值
+* false
+* 0
+* -0
+* "" 或 ''
+* null
+* undefined
+* NaN
+
+=== 簡單範例
+[js]
+----
+if (!false) {
+  console.log("false 是 Falsy 值");
+}
+
+if (!0) {
+  console.log("0 是 Falsy 值");
+}
+
+if (!-0) {
+  console.log("-0 是 Falsy 值");
+}
+
+if (!"") {
+  console.log("空字串 是 Falsy 值");
+}
+
+if (!'') {
+  console.log("空字串 是 Falsy 值");
+}
+
+if (!null) {
+  console.log("null是 Falsy 值");
+}
+
+if (!undefined) {
+  console.log("undefined 是 Falsy 值");
+}
+
+if (!NaN) {
+  console.log("NaN是 Falsy 值");
+}
+----
+
+=== 一些簡單應用
+[js]
+----
+let falsyName = "";
+if (!falsyName) {
+  console.log("名稱不可為空");
+}
+----
+可用來判斷輸入名稱是否為空字串
+
+[js]
+----
+let falsyUserName = "";
+let falsyDisplayName = falsyUserName || "訪客"; 
+console.log(falsyDisplayName); // "訪客"
+----
+若輸入為空可提供預設值
+
+[js]
+----
+let falsyAge = 0;
+let falsyStatus = falsyAge ? "有效年齡" : "無效年齡";
+console.log(falsyStatus); // "無效年齡"
+----
+配合三元運算子判斷年齡驗證
+
+[js]
+----
+let apiResponse = null;
+
+if (!apiResponse) {
+  console.log("無法獲取資料");
+} else {
+  console.log("資料已獲取");
+}
+----
+驗證API資料是否正確獲取
 
 == Custom Error
