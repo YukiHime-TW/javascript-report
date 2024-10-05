@@ -1,0 +1,110 @@
+= Arrow Function
+箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
+
+
+* 語法樣貌
+[source,javascript]
+----
+    function square(x) {
+        return x * x;
+    }
+
+    const squareByArrowFunc = (x) => {return x * x};
+
+    const squareByArrowFunc2 = (x) => x * x;
+
+    const squareByArrowFunc3 = x => x * x;
+
+----
+
+* 特點
+
+    ** 如果function只有一個表達式，可以省略大括號 {} 和 return 關鍵字。
+
+    ** 當只有一個參數時，參數括號也可以省略。
+
+* 不具有自己的this
+    ** 箭頭函數不會創建自己的this，它會去它會從**父作用域**繼承this
+
+這邊使用介紹this時所用的範例
+
+我們可以看到在objarr中定義了greet()並使用了傳統方法去建構方法，此時greet**建立了一個作用域來讓使用arrow function建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
+
+[source,javascript]
+----
+
+const objarr = {
+    name: 'Eva',
+    greet: function() {
+         // 注意，這裡是 function，以此為基準產生一個作用域
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr.greet(); // 輸出 "Hello, Eva"
+
+----
+
+因為從**父作用域**繼承this的特性，使得此方式非常適合用在callback函數中
+[source,javascript]
+----
+
+function arrowWithCallBack() {
+  this.count = 0;
+
+  setInterval(() => {
+    this.count++; // 箭頭函數中的 `this` 依然指向此實例
+    console.log(this.count);
+  }, 1000);
+}
+
+const awcb = new arrowWithCallBack();
+
+----
+
+若是使用傳統方式的話，需使用bind()綁定後再做使用
+
+[source,javascript]
+----
+
+function arrowWithCallBack2() {
+  this.count = 0;
+
+  setInterval(function() {
+    this.count++; // `this` 指向全局對象NaN
+    console.log(this.count);
+  }.bind(this), 1000); // 需要使用 bind() 來綁定 `this`
+}
+
+const awcb = new arrowWithCallBack2();
+
+----
+
+* 不能用作構造函數
+** 箭頭函數不能使用 new 關鍵字來實例化。
+
+[source, javascript]
+----
+const Foo = () => {};
+const foo = new Foo(); // TypeError: Foo is not a constructor
+
+----
+
+* 沒有 arguments 參數
+** 箭頭函數沒有自己的arguments參數可以使用，但可以改用傳送..arg的方式(Rest Parameters)來進行
+
+[source, javascript]
+----
+const updateICard = (...args) => {
+  console.log(args);
+};
+
+updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
+
+----
+
+== XMLHttpRequest
+== Fetch
