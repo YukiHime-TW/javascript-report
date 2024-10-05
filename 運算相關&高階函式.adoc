@@ -1,0 +1,99 @@
+= 運算相關語法
+
+== Ternary Operator 三元運算子
+是javaScript當中進行條件判斷的一種方法，運算子(?)前面為條件式，若條件式為真會執行運算子(:)前面的表達式，若為假則執行後面的表達式
+
+=== 語法
+
+[js]
+----
+條件式 ? 表達式1 : 表達式2
+----
+
+=== 簡單範例
+[js]
+----
+var age = 26;
+var beverage = age >= 21 ? "Beer" : "Juice";
+console.log(beverage); // "Beer"
+----
+
+=== 可用來處理null
+[js]
+----
+function greeting(person) {
+  var name = person ? person.name : "stranger";
+  return "Howdy, " + name;
+}
+
+console.log(greeting({ name: "Alice" })); // "Howdy, Alice"
+console.log(greeting(null)); // "Howdy, stranger"
+----
+在上述的例子中若person為null則會被判為假值(Falsy)，因此會執行(:)後方的表達式
+
+=== 條件鏈
+三元運算子為右相依性，因此可以使用類似if...else if...else的語法
+
+[js]
+----
+function example(…) {
+    return condition1 ? value1
+         : condition2 ? value2
+         : condition3 ? value3
+         : value4;
+}
+
+// Equivalent to:
+
+function example(…) {
+    if (condition1) { return value1; }
+    else if (condition2) { return value2; }
+    else if (condition3) { return value3; }
+    else { return value4; }
+}
+----
+
+
+
+== Nullish Coalescing Operator(??)/Assignment(??=)
+javaScript 的 Nullish Coalescing Operator (??) 和 Nullish Coalescing Assignment (??=) 是用來處理 null 或 undefined 值的運算子，常用於提供默認值或簡化賦值操作。
+
+=== (??)語法
+[js]
+----
+let result = value1 ?? value2;
+----
+??運算子會檢查左側運算元是否為null或undefined，若為真會返回右側值，否則返回左側值
+
+=== 簡單範例
+[js]
+----
+let name = null;
+let defaultName = "Anonymous";
+
+let result = name ?? defaultName;
+console.log(result); // 輸出Anonymous
+----
+
+=== (??=)語法
+[js]
+----
+variable ??= value;
+----
+??= 運算子會檢查變數是否為null或undefined若為真則會進行賦值，否則會保持原樣
+
+=== 簡單範例
+[js]
+----
+let username = null;
+username ??= "Guest";
+console.log(username); // 輸出 Guest
+
+let age = 0;
+age ??= 18;
+console.log(age); // 輸出 0
+----
+
+== Falsy
+
+== Custom Error
