@@ -1,8 +1,10 @@
-= Arrow Function
+== Arrow Function
+
 箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
 
 
 * 語法樣貌
+
 [source,javascript]
 ----
     function square(x) {
@@ -24,7 +26,7 @@
     ** 當只有一個參數時，參數括號也可以省略。
 
 * 不具有自己的this
-    ** 箭頭函數不會創建自己的this，它會去它會從**父作用域**繼承this
+    ** 箭頭函數不會創建自己的this，它會從**父作用域**繼承this
 
 這邊使用介紹this時所用的範例
 
@@ -107,4 +109,7 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 ----
 
 == XMLHttpRequest
+
+
+
 == Fetch
