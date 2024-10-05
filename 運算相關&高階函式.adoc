@@ -22,8 +22,8 @@ console.log(beverage); // "Beer"
 [js]
 ----
 function greeting(person) {
-  var name = person ? person.name : "stranger";
-  return "Howdy, " + name;
+    var name = person ? person.name : "stranger";
+    return "Howdy, " + name;
 }
 
 console.log(greeting({ name: "Alice" })); // "Howdy, Alice"
@@ -54,15 +54,15 @@ let score = 85;
 let grade;
 
 if (score >= 90) {
-  grade = "A";
+    grade = "A";
 } else if (score >= 80) {
-  grade = "B";
+    grade = "B";
 } else if (score >= 70) {
-  grade = "C";
+    grade = "C";
 } else if (score >= 60) {
-  grade = "D";
+    grade = "D";
 } else {
-  grade = "F";
+    grade = "F";
 }
 
 console.log(grade); // "B"
@@ -142,35 +142,35 @@ console.log(result2); // 輸出10
 [js]
 ----
 if (!false) {
-  console.log("false 是 Falsy 值");
+    console.log("false 是 Falsy 值");
 }
 
 if (!0) {
-  console.log("0 是 Falsy 值");
+    console.log("0 是 Falsy 值");
 }
 
 if (!-0) {
-  console.log("-0 是 Falsy 值");
+    console.log("-0 是 Falsy 值");
 }
 
 if (!"") {
-  console.log("空字串 是 Falsy 值");
+    console.log("空字串 是 Falsy 值");
 }
 
 if (!'') {
-  console.log("空字串 是 Falsy 值");
+    console.log("空字串 是 Falsy 值");
 }
 
 if (!null) {
-  console.log("null是 Falsy 值");
+    console.log("null是 Falsy 值");
 }
 
 if (!undefined) {
-  console.log("undefined 是 Falsy 值");
+    console.log("undefined 是 Falsy 值");
 }
 
 if (!NaN) {
-  console.log("NaN是 Falsy 值");
+    console.log("NaN是 Falsy 值");
 }
 ----
 
@@ -181,7 +181,7 @@ if (!NaN) {
 ----
 let falsyName = "";
 if (!falsyName) {
-  console.log("名稱不可為空");
+    console.log("名稱不可為空");
 }
 ----
 
@@ -207,10 +207,132 @@ console.log(falsyStatus); // "無效年齡"
 let apiResponse = null;
 
 if (!apiResponse) {
-  console.log("無法獲取資料");
+    console.log("無法獲取資料");
 } else {
-  console.log("資料已獲取");
+    console.log("資料已獲取");
 }
 ----
 
 == Custom Error
+在javaScript中可藉由繼承Error類擴充一個自訂義的錯誤類型，透過創建具有特定意圖或語義的錯誤來更精確地處理錯誤情況
+
+=== 創建Custom Error
+1. 創建一個新的類，該類繼承自Error，並且添加自定義的屬性或方法來進一步擴展其功能
+2. 為了確保錯誤信息正確顯示，需要調用 Error建構子，並且手動設置堆疊追蹤。
+
+[js]
+----
+class MyCustomError extends Error {
+    constructor(message) {
+    // 調用父類 (Error) 的建構子，傳遞錯誤信息
+        super(message);
+        this.name = 'MyCustomError'; // 設置錯誤名稱為自定義的類名
+    }
+}
+
+try {
+    throw new MyCustomError('This is a custom error message!');
+} catch (err) {
+    console.log(err.name); // MyCustomError
+    console.log(err.message); // This is a custom error message!
+    console.log(err.stack); // 錯誤堆疊追蹤
+}
+----
+
+=== 一些應用例子
+- 數據驗證錯誤
+[js]
+----
+class ValidationError extends Error {
+    constructor(message, field) {
+        super(message);
+        this.name = 'ValidationError';
+        this.field = field; // 追蹤是哪個字段導致的錯誤
+    }
+}
+
+function validateUser(user) {
+    if (!user.name) {
+        throw new ValidationError('Name is required', 'name');
+    }
+    if (user.age < 18) {
+        throw new ValidationError('User must be at least 18 years old', 'age');
+    }
+}
+
+try {
+    const user = { name: '', age: 16 };
+    validateUser(user);
+} catch (err) {
+    console.log("${err.message} in ${err.field} field");
+    console.log(err.stack)
+}
+----
+
+* 登入認證錯誤
+[js]
+----
+class AuthenticationError extends Error {
+    constructor(message, reason) {
+        super(message);
+        this.name = 'AuthenticationError';
+        this.reason = reason; // 指出具體的認證問題
+    }
+}
+
+function login(username, password) {
+    const storedPassword = 'password123'; // 假設這是從數據庫獲取的密碼
+    if (password !== storedPassword) {
+        throw new AuthenticationError('Invalid password', 'incorrect_password');
+    }
+    return 'User authenticated successfully';
+}
+
+try {
+    login('user1', 'wrongpassword');
+} catch (err) {
+    console.log(`Authentication failed: ${err.message} (${err.reason})`);
+    console.log(err.stack)
+}
+----
+
+* 檔案文件讀取錯誤
+[js]
+----
+class FileReadError extends Error {
+    constructor(message, fileName) {
+        super(message);
+        this.name = 'FileReadError';
+        this.fileName = fileName; // 保存出錯的文件名
+    }
+}
+
+function readFile(fileName) {
+    const success = false; // 假設文件讀取失敗
+    if (!success) {
+        throw new FileReadError(`Failed to read file: ${fileName}`);
+    }
+    return 'File content';
+}
+
+try {
+    readFile('data.txt');
+} catch (err) {
+    console.log(`File error: ${err.message} (File: ${err.fileName})`);
+    console.log(err.stack)
+}
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
