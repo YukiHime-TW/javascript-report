@@ -175,6 +175,8 @@ if (!NaN) {
 ----
 
 === 一些簡單應用
+
+* 可用來判斷輸入名稱是否為空字串
 [js]
 ----
 let falsyName = "";
@@ -182,24 +184,24 @@ if (!falsyName) {
   console.log("名稱不可為空");
 }
 ----
-可用來判斷輸入名稱是否為空字串
 
+* 若輸入為空可提供預設值
 [js]
 ----
 let falsyUserName = "";
 let falsyDisplayName = falsyUserName || "訪客"; 
 console.log(falsyDisplayName); // "訪客"
 ----
-若輸入為空可提供預設值
 
+* 配合三元運算子判斷年齡驗證
 [js]
 ----
 let falsyAge = 0;
 let falsyStatus = falsyAge ? "有效年齡" : "無效年齡";
 console.log(falsyStatus); // "無效年齡"
 ----
-配合三元運算子判斷年齡驗證
 
+* 驗證API資料是否正確獲取
 [js]
 ----
 let apiResponse = null;
@@ -210,6 +212,5 @@ if (!apiResponse) {
   console.log("資料已獲取");
 }
 ----
-驗證API資料是否正確獲取
 
 == Custom Error
