@@ -1,0 +1,188 @@
+= this
+
+[cols="1,1", options="header"]
+|===
+| 上下文 | 描述
+
+| 全域物件
+| 在全域範圍內（如瀏覽器中），`this` 指向全域物件 `window`。
+
+| 函數
+| 在普通函數中，`this` 的值取決於如何調用函數：
+  - 非嚴格模式：`this` 指向全域物件。
+  - 嚴格模式：`this` 的值為 `undefined`。
+
+| 物件方法
+| 當函數作為對象的方法調用時，`this` 指向該物件。
+| 建構子
+| 在構造函數中，`this` 指向新建立的實體。
+| 事件處理器
+| 在事件處理器中，`this` 指向觸發事件的 DOM 元素。
+| 箭頭函數 | 箭頭函數不具有自己的 this，它會從父作用域繼承 this。
+| bind()、call() 和 apply() | 這些方法可以顯式設置 this 的值：
+
+bind() 返回一個新函數，this 永久綁定到指定的對象。
+call() 和 apply() 立即調用函數並指定 this 的值。
+|===
+
+== 全域物件
+
+----
+
+console.log(this === window)  //true
+
+----
+
+
+== 函數
+
+----
+
+ function run() {
+    console.log(this === window);
+}
+run();
+
+----
+
+== 物件方法
+
+----
+
+const obj = {
+    name: 'Alice',
+    greet() {
+        console.log('Hello, ' + this.name);
+    }
+};
+
+obj.greet(); // 輸出 "Hello, Alice"
+
+----
+
+== 建構子
+
+----
+
+function Person(name) {
+    this.name = name;
+}
+
+const person1 = new Person('Bob');
+console.log(person1.name); // 輸出 "Bob"
+
+----
+
+
+== 事件處理器
+
+----
+<button id="myButton">Click me</button>
+<script>
+    document.getElementById('myButton').addEventListener('click', function() {
+        console.log(this); // 指向被點擊的 button 元素
+    });
+</script>
+----
+
+== 箭頭函數
+
+----
+
+const objarr = {
+    name: 'Eva',
+    greet: function() {
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr.greet(); // 輸出 "Hello, Eva"
+
+----
+
+== bind()、call() 和 apply()
+
+----
+const bindobj = { name: 'Charlie' };
+function sayHi() {
+    console.log('Hi, ' + this.name);
+}
+
+const boundSayHi = sayHi.bind(bindobj);
+boundSayHi(); // 輸出 "Hi, Charlie"
+
+function greet() {
+    console.log('Hello, ' + this.name);
+}
+
+const user = { name: 'Diana' };
+greet.call(user); // 輸出 "Hello, Diana"
+greet.apply(user); // 輸出 "Hello, Diana"
+
+----
+
+= JavaScript 中的 `try...catch`
+:toc: macro
+
+== **語法**
+
+----
+try catch 可以處理同步的程式碼。
+try區塊後需要有catch 或 finally。
+try{
+//block
+}catch(e){ //這裏的e是block區塊中被丟出的任意物件(通常是xxError)
+ 
+}finally{
+//一定會執行的區塊
+}
+----
+== **try catch 與非同步**
+
+try catch 可以處理同步的程式碼，以下有數種可以處理非同步程式的錯誤的方式
+1.前面有加上await的函式
+
+----
+async function awaitrun() {
+    console.log('run')
+    throw new Error("這是異步中的錯誤");
+}
+async function inner() {
+    try {
+        await awaitrun();
+    } catch (e) {
+        console.log('我抓到的錯誤', e)
+    }
+
+}
+inner();
+----
+
+2.直接在call back裡面try catch
+
+----
+
+function callbackrun() {
+    console.log('run')
+    setTimeout(() => {
+        throw new Error("這是callback中的錯誤");
+    }, 1000)
+
+}
+async function inner() {
+    try {
+        callbackrun()
+    } catch (e) {
+        console.log('我抓到的錯誤', e)
+    }
+
+}
+inner();
+
+----
+
+如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
+
