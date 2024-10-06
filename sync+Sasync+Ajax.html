@@ -466,10 +466,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://127.0.0.1:5500/ex1.html">簡單HTML的例子(同步)</a></p>
+<p><a href="example/ex1.html">簡單HTML的例子(同步)</a></p>
 </li>
 <li>
-<p><a href="http://127.0.0.1:5500/ex1-1.html">簡單HTML的例子(非同步)</a></p>
+<p><a href="example/ex1-1.html">簡單HTML的例子(非同步)</a></p>
 </li>
 </ul>
 </div>
@@ -526,12 +526,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_eventloopcallback與非同步的關係">EventLoop、CallBack與非同步的關係</h2>
+<h2 id="_event_loopcallback與非同步的關係">Event Loop、CallBack與非同步的關係</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>當遇到非同步操作時，Callback 函式在 <strong>Event Loop 管理下</strong>，會被丟到外面，等同步操作完成後，Event Loop 再從 Queue 中取出 Callback 函式執行。</p>
+<p><strong>JavaScript 是單執行緒</strong>，因此想要達成非同步操作，就需要依賴執行環境提供的機制</p>
+</li>
+<li>
+<p>JavaScript 本身並沒有事件循環（Event Loop）這個機制，是由 JavaScript 的執行環境所提供的</p>
+</li>
+<li>
+<p>當遇到非同步操作時，callback 函式在 <strong>Event Loop 管理下</strong>，會被丟到外面，等同步操作完成後，Event Loop 再從 Queue 中取出 callback 函式執行。</p>
 </li>
 </ul>
 </div>
@@ -555,7 +561,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 Callback 函式交給 Web API 進行計時。等計時時間到後，Callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。</p>
+<p>當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 callback 函式交給 Web API 進行計時。等計時時間到後，callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。</p>
 </li>
 </ul>
 </div>
@@ -571,7 +577,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul>
 <li>
 <p>macrotask（就是 task）是指比較大型且需要等待的非同步操作。常見的 macrotask 包括：</p>
-</li>
+<div class="ulist">
+<ul>
 <li>
 <p>從 <code>&lt;script src="&#8230;&#8203;"&gt;</code> 外部下載的 script</p>
 </li>
@@ -581,14 +588,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>Ajax callback function</p>
 </li>
+</ul>
+</div>
+</li>
 <li>
 <p>microtask 是比宏任務更輕量級的任務。包含：</p>
-</li>
+<div class="ulist">
+<ul>
 <li>
 <p>promise <code>.then/catch/finally</code> 中的 callback function</p>
 </li>
 <li>
 <p><code>queueMicrotask(func)</code> 中的 func</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -606,7 +620,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><a href="https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop">參考資料4</a></p>
 </li>
 <li>
-<p>每次 Macrotask 還會檢查 Microtask</p>
+<p>每次 Macrotask 後還會檢查 Microtask</p>
+</li>
+<li>
+<p><a href="example/ex2.html">Macrotask 還會檢查 Microtask</a></p>
 </li>
 </ul>
 </div>
@@ -647,6 +664,45 @@ Macrotask - setTimeout 2</code></pre>
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_總結">總結</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">特性</th>
+<th class="tableblock halign-left valign-top">同步任務</th>
+<th class="tableblock halign-left valign-top">非同步任務</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">執行順序</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">必須等待當前任務完成後才能進行下一個任務</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在等待某個任務的同時可以進行其他任務</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">例子</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在咖啡廳等咖啡做好後再做其他事</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在咖啡廳點完餐後回座位處理其他事情</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">阻塞</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">會阻塞，直到任務完成</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">不會阻塞，可以繼續執行其他任務</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">對應 JavaScript</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">直接執行的函式調用，例如簡單數學計算</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setTimeout()</code>、<code>fetch()</code> 等非同步操作</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -694,7 +750,7 @@ Macrotask - setTimeout 2</code></pre>
 <p>無刷新更新例子：搜尋引擎中的關鍵字建議。</p>
 </li>
 <li>
-<p>下面 <a href="http://127.0.0.1:5500/ex3.html">例子</a> 是 Ajax 的部分更新</p>
+<p>下面 <a href="example/ex3.html">例子</a> 是 Ajax 的部分更新</p>
 </li>
 </ul>
 </div>
@@ -727,13 +783,158 @@ Macrotask - setTimeout 2</code></pre>
 &lt;/script&gt;</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>這段代碼中，使用了 fetch() 來發送 HTTP 請求到 <code><a href="https://jsonplaceholder.typicode.com/posts/${postId}" class="bare">https://jsonplaceholder.typicode.com/posts/${postId}</a></code>，請求數據並通過 <code>.then(response &#8658; response.json())`</code> 將回應轉換為 JSON 格式的數據。</p>
+</li>
+<li>
+<p><code>.then(data &#8658; { &#8230;&#8203; })</code> 接收轉換後的數據，用這些數據來覆蓋原本的 HTML 內容。</p>
+</li>
+<li>
+<p>`document.getElementById('content').innerHTML`更改 content 這個 &lt;div&gt; 元素的內容，將其覆蓋為新的 &lt;h3&gt; 和 &lt;p&gt; 元素。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ajax_的實現方式">AJAX 的實現方式</h3>
+<div class="sect3">
+<h4 id="_最原始的方式">最原始的方式</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>XMLHttpRequest</strong>：</p>
+</li>
+<li>
+<p>需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。</p>
+<div class="literalblock">
+<div class="content">
+<pre>[source, javascript]
+----
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        console.log(JSON.parse(xhr.responseText));
+    } else {
+        console.error('Request failed.');
+    }
+};
+xhr.send();
+----</pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Fetch API</strong>：</p>
+</li>
+<li>
+<p>比較現代的方式，使用 Promise 來進行非同步操作。比  <code>XMLHttpRequest</code> 更加簡潔。</p>
+<div class="literalblock">
+<div class="content">
+<pre>[source, javascript]
+----
+fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response =&gt; response.json())
+    .then(data =&gt; console.log(data))
+    .catch(error =&gt; console.error('Error:', error));
+----</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_工具與框架">工具與框架</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Axios</strong>：
+基於 <strong>Promise</strong> 的 HTTP 客戶端，在 <code>Fetch API</code> 的基礎上進一步封裝，提供了一些更方便的功能，例如錯誤處理、請求取消等。</p>
+<div class="literalblock">
+<div class="content">
+<pre>[source, javascript]
+----
+axios.get('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response =&gt; console.log(response.data))
+    .catch(error =&gt; console.error('Error:', error));
+----</pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>jQuery 的 $.ajax()</strong>：
+是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在主要出現在一些老項目。</p>
+<div class="literalblock">
+<div class="content">
+<pre>[source, javascript]
+----
+$.ajax({
+    url: 'https://jsonplaceholder.typicode.com/posts/1',
+    method: 'GET',
+    success: function(data) {
+        console.log(data);
+    },
+    error: function(error) {
+        console.error('Error:', error);
+    }
+});
+----</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_總結_2">總結</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Ajax是一套綜合性瀏覽器端技術，通過非同步請求來提升使用者體驗。</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">實現方式</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XMLHttpRequest</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最原始的 AJAX 實現方式，手動處理請求的建立、發送及回應。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetch API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">現代的替代方案，語法簡潔，基於 Promise 進行非同步操作。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Axios</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友好的語法及更多功能（如錯誤處理、取消請求等）。</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jQuery 的 $.ajax()</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">早期廣泛使用的 AJAX 方法，現在主要出現在一些老項目中。</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-06 10:35:10 +0800
+Last updated 2024-10-07 01:10:44 +0800
 </div>
 </div>
 </body>

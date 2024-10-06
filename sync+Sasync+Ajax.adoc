@@ -43,9 +43,12 @@ image::images/img2.png[依序]
 - link:https://developer.mozilla.org/zh-CN/docs/Glossary/Parse[參考資料1]
 link:https://html.spec.whatwg.org/multipage/images.html#attributes-common-to-source-and-img-elements[參考資料2]
 
-== EventLoop、CallBack與非同步的關係
+== Event Loop、CallBack與非同步的關係
+* **JavaScript 是單執行緒**，因此想要達成非同步操作，就需要依賴執行環境提供的機制
 
-* 當遇到非同步操作時，Callback 函式在 **Event Loop 管理下**，會被丟到外面，等同步操作完成後，Event Loop 再從 Queue 中取出 Callback 函式執行。
+* JavaScript 本身並沒有事件循環（Event Loop）這個機制，是由 JavaScript 的執行環境所提供的
+
+* 當遇到非同步操作時，callback 函式在 **Event Loop 管理下**，會被丟到外面，等同步操作完成後，Event Loop 再從 Queue 中取出 callback 函式執行。
 
 === 以 setTimeout() 函式例子來解釋
 
@@ -54,20 +57,20 @@ link:https://html.spec.whatwg.org/multipage/images.html#attributes-common-to-sou
 
 image::images//img3.png[同步]
 
-* 當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 Callback 函式交給 Web API 進行計時。等計時時間到後，Callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。
+* 當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 callback 函式交給 Web API 進行計時。等計時時間到後，callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。
 
 image::images//img4.png[非同步]
 
 === Queue 又細分為 Microtask（微任務）、Macrotask（宏任務）
 
 * macrotask（就是 task）是指比較大型且需要等待的非同步操作。常見的 macrotask 包括：
-    * 從 `<script src="...">` 外部下載的 script
-    * 各種 Web APIs，例如 setTimeout 的 callback function
-    * Ajax callback function
+    - 從 `<script src="...">` 外部下載的 script
+    - 各種 Web APIs，例如 setTimeout 的 callback function
+    - Ajax callback function
 
 * microtask 是比宏任務更輕量級的任務。包含：
-    * promise `.then/catch/finally` 中的 callback function
-    * `queueMicrotask(func)` 中的 func
+    - promise `.then/catch/finally` 中的 callback function
+    - `queueMicrotask(func)` 中的 func
 
 **執行順序為：同步任務 → 微任務 → 宏任務**
 
@@ -113,6 +116,21 @@ Microtask inside Macrotask 1
 Macrotask - setTimeout 2
 ----
 
+=== 總結
+
+|===
+| 特性            | 同步任務                           | 非同步任務
+
+| 執行順序        | 必須等待當前任務完成後才能進行下一個任務 | 在等待某個任務的同時可以進行其他任務
+
+| 例子            | 在咖啡廳等咖啡做好後再做其他事        | 在咖啡廳點完餐後回座位處理其他事情
+
+| 阻塞       | 會阻塞，直到任務完成                | 不會阻塞，可以繼續執行其他任務
+
+| 對應 JavaScript | 直接執行的函式調用，例如簡單數學計算   | `setTimeout()`、`fetch()` 等非同步操作
+|===
+
+
 == Ajax
 
 === Ajax 介紹
@@ -154,3 +172,72 @@ Macrotask - setTimeout 2
   }
 </script>
 ----
+
+* 這段代碼中，使用了 fetch() 來發送 HTTP 請求到 `https://jsonplaceholder.typicode.com/posts/${postId}`，請求數據並通過 `.then(response => response.json())`` 將回應轉換為 JSON 格式的數據。
+
+* `.then(data => { ... })` 接收轉換後的數據，用這些數據來覆蓋原本的 HTML 內容。
+
+* `document.getElementById('content').innerHTML`更改 content 這個 <div> 元素的內容，將其覆蓋為新的 <h3> 和 <p> 元素。
+
+== AJAX 的實現方式
+
+=== 原生技術的介紹
+
+* **XMLHttpRequest**：
+  最原始的 AJAX 實現方式，早期實現 AJAX 請求的主要手段，有助於理解 AJAX 的工作原理。
+
+  [source, javascript]
+  ----
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+  xhr.onload = function() {
+      if (xhr.status === 200) {
+          console.log(JSON.parse(xhr.responseText));
+      } else {
+          console.error('Request failed.');
+      }
+  };
+  xhr.send();
+  ----
+
+* **Fetch API**：
+  現代的替代方案，相較於 XMLHttpRequest 更加簡潔、語法更直觀，使用 **Promise** 進行異步操作。
+
+  [source, javascript]
+  ----
+  fetch('https://jsonplaceholder.typicode.com/posts/1')
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+  ----
+
+=== 工具與框架
+
+在了解了基礎的實現方式後，可以介紹一些基於原生技術的工具，這些工具使得 AJAX 的使用更加高效和方便：
+
+* **Axios**：
+  基於 **Promise** 的 HTTP 客戶端，封裝了底層的請求，提供了更友好的語法和更多功能（如錯誤處理、取消請求等），比 Fetch API 更強大。
+
+  [source, javascript]
+  ----
+  axios.get('https://jsonplaceholder.typicode.com/posts/1')
+      .then(response => console.log(response.data))
+      .catch(error => console.error('Error:', error));
+  ----
+
+* **jQuery 的 $.ajax()**：
+  是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在相對較舊，主要出現在一些老項目中。
+
+  [source, javascript]
+  ----
+  $.ajax({
+      url: 'https://jsonplaceholder.typicode.com/posts/1',
+      method: 'GET',
+      success: function(data) {
+          console.log(data);
+      },
+      error: function(error) {
+          console.error('Error:', error);
+      }
+  });
+  ----
