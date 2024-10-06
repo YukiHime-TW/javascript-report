@@ -280,7 +280,7 @@ fetch('https://httpbin.org/post', {
 
 * 回調地獄
 
-假設我要取得某位使用者的某筆訂單的訂單明細，用XHR寫起來會是像在打波動拳。
+假設我要取得某位使用者的貼文與他的貼文評論時，用XHR寫起來會是像在打波動拳。
 
 不囉說,直接上圖
 [source, javascript]
@@ -315,7 +315,7 @@ fetch('https://httpbin.org/post', {
                     if (err) {
                         console.error('獲取使用者的貼文時出現錯誤:', err);
                     } else {
-                        console.log('用戶的帖子:', posts);
+                        console.log('使用者的貼文:', posts);
                         if (posts.length === 0) {
                             console.log('此使用者沒有任何貼文。');
                             return;
