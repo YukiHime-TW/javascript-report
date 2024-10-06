@@ -12,8 +12,8 @@ image::images/img1.png[同步非同步]
 
 === 在瀏覽器中的同步載入
 
-* link:http://127.0.0.1:5500/ex1.html[簡單HTML的例子(同步)]
-* link:http://127.0.0.1:5500/ex1-1.html[簡單HTML的例子(非同步)]
+* link:example/ex1.html[簡單HTML的例子(同步)]
+* link:example/ex1-1.html[簡單HTML的例子(非同步)]
 
 
 [source,html]
@@ -75,7 +75,8 @@ image::images//queue.gif[流程]
 
 * link:https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop[參考資料4]
 
-* 每次 Macrotask 還會檢查 Microtask
+* 每次 Macrotask 後還會檢查 Microtask
+* link:example/ex2.html[Macrotask 還會檢查 Microtask]
 
 [source,javascript]
 ----
@@ -126,7 +127,7 @@ Macrotask - setTimeout 2
     * 傳統的表單提交會導致瀏覽器重新載入頁面。但使用 Ajax 可以在不刷新頁面的情況下提交數據，並更新部分內容。
     * 無刷新更新例子：搜尋引擎中的關鍵字建議。
 
-* 下面 link:http://127.0.0.1:5500/ex3.html[例子] 是 Ajax 的部分更新
+* 下面 link:example/ex3.html[例子] 是 Ajax 的部分更新
 
 [source,html]
 ----
