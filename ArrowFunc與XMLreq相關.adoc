@@ -8,10 +8,11 @@
 [source,javascript]
 ----
     function square(x) {
-        return x * x;
+        return x * x; //原始函數
     }
 
-    const squareByArrowFunc = (x) => {return x * x};
+    //以下皆為Arrow Function
+    const squareByArrowFunc = (x) => {return x * x}; 
 
     const squareByArrowFunc2 = (x) => x * x;
 
@@ -28,10 +29,9 @@
 * 不具有自己的this
     ** 箭頭函數不會創建自己的this，它會從**父作用域**繼承this
 
-這邊使用介紹this時所用的範例
+這邊使用介紹this時所用的範例 
 
 我們可以看到在objarr中定義了greet()並使用了傳統方法去建構方法，此時greet**建立了一個作用域來讓使用arrow function建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
-
 [source,javascript]
 ----
 
@@ -48,6 +48,23 @@ const objarr = {
 
 objarr.greet(); // 輸出 "Hello, Eva"
 
+----
+
+如果把greet也改成用arrow function的方式宣告的話
+[source, javascript]
+----
+const objarr2 = {
+    name: 'Eva',
+    greet: () => {
+         // 此時的 greet() 也沒有自己的 this ，會指向父作用域，環境是瀏覽器的話也就是windows
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr2.greet(); // 輸出 "Hello,"
 ----
 
 因為從**父作用域**繼承this的特性，使得此方式非常適合用在callback函數中
@@ -110,6 +127,247 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 
 == XMLHttpRequest
 
+XMLHttpRequest（簡稱 XHR）是一種在網頁中與伺服器進行資料交換的 API，允許在不重新載入整個頁面的情況下，動態地更新部分網頁內容。這使得網頁應用程式在更新部分資料時不會去中斷使用者當下的操作。
+
+此項技術在所謂的「AJAX」（Asynchronous JavaScript and XML）功能應用中被大量使用。
+
+雖然 XMLHttpRequest 這個物件的命名包含了 XML 與 HTTP 等字眼，但實際上 XMLHttpRequest 可用來接收任何類型的資料，不限於 XML 類型。
+
+* 實作XMLHttpRequest
+
+** 步驟如下
+    . 建立xhr物件
+    . 設定請求
+    . 傳送請求
+    . 監聽回應
+    . 處理資料
+
+.程式碼範例
+[source, javascript]
+----
+// 創建一個新的 XMLHttpRequest 物件
+var xhr = new XMLHttpRequest();
+
+// 定義當接收到回應時的回調函數
+function reqListener() {
+    if (xhr.readyState === XMLHttpRequest.DONE) { // 請求完成
+        if (xhr.status === 200) { // 請求成功
+            // 處理伺服器回應的資料
+            console.log(xhr.responseText);
+        } else { // 請求失敗
+            console.error('請求失敗，狀態碼：' + xhr.status);
+        }
+    }
+};
+
+//將函數括載到load上
+xhr.onload = reqListener
+
+// 初始化一個 GET 請求 各項參數分別為：請求方法、URL、是否為異步執行
+xhr.open('GET', 'https://httpbin.org/get', true);
+
+// 發送請求
+xhr.send(null);
+----
+
 
 
 == Fetch
+
+JavaScript 的 fetch API 是一個由 WHATWG Fetch Standard 所定義的**能獲取跨網路資源的介面**，用於在網頁中進行網路請求。
+
+.Fetch的介面的核心
+[cols="1,3"]
+|===
+| 項目 | 說明
+
+| **Request**
+| 可以將URL、請求方法、標頭與請求的內容封裝在request物件中使用。
+
+
+| **Response**
+| 表示將request打出去後，伺服器所回傳的回傳內容，包含了Http狀態碼、標頭(Header)、以及回傳內容(Body)等等。
+
+| **Header**
+| 用於操作 HTTP 標頭，提供方法如 get()、set()、append() 等來讀取和修改標頭。
+
+| **Body**
+| Request 和 Response 會繼承 Body，Body物件上提供了處理請求和回應的各種方法，如 .json()、.text()、.blob() 等，用於不同格式的資料。
+|===
+
+* 如何使用fetch取得資源
+
+.在 Global環境下可直接呼叫fetch方法來進行呼叫
+[source, javascript]
+----
+
+const request = new Request("https://httpbin.org/get", {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+//fetch的第一個參數為URL，此參數為必填
+fetch(request) //只有url就會預設這個請求的HTTP請求方法是GET。
+  .then(response => {// 接收到伺服器丟回來的response
+    return response.json();
+  })
+  .then(function (myJson) {
+    console.log(myJson);
+  }).catch(error => {
+    console.error('Fetch error:', error);
+  });
+----
+
+Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理異步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致中斷Request的狀況下出現rejected狀態。這也就是說，只要伺服器回傳，它的回傳就都會是fulfilled狀態。
+
+
+
+
+
+== 直接使用XMLHttpRequest物件的問題與使用fetch的對比
+
+* XMLHttpRequest的API設計得過於高階(簡單)，所有的輸出與輸入、狀態，都只能與這個XHR物件溝通取得。
+
+假設你需要自訂請求的一些細節，如自定義請求的標頭或處理不同的回應類型，XHR 的封裝性會使這些操作變得繁瑣。
+並且XHR的**錯誤處理**也被封裝起來，要捕捉到網路錯誤或超時等異常情况十分困難。
+
+.使用XMLHttpRequest
+[source, javascript]
+----
+const xhr2 = new XMLHttpRequest();
+xhr2.open('POST', 'https://httpbin.org/post', true);
+xhr2.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+xhr2.onreadystatechange = function() {
+  if (xhr2.readyState === XMLHttpRequest.DONE) {
+    if (xhr2.status === 200) {
+      const response = JSON.parse(xhr2.responseText);
+      console.log(response);
+    } else {
+      console.error('請求失敗');
+    }
+  }
+};
+xhr2.onerror = function() {
+  new Error('網路錯誤'); // 無法得知更詳細的錯誤訊息 只知道是網路錯誤
+};
+const data = JSON.stringify({ key: 'value' });
+xhr2.send(data);
+
+----
+
+.使用fetch
+[source, javascript]
+----
+fetch('https://httpbin.org/post', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8'
+  },
+  body: JSON.stringify({ key: 'value' })
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error('請求失敗');
+  }
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error(error));//可以取得詳細的錯誤資訊
+
+----
+
+* 回調地獄
+
+假設我要取得某位使用者的某筆訂單的訂單明細，用XHR寫起來會是像在打波動拳。
+
+不囉說,直接上圖
+[source, javascript]
+----
+ function getData(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        callback(null, data);
+                    } catch (e) {
+                        callback(new Error('解析 JSON 失敗'));
+                    }
+                } else {
+                    callback(new Error('請求失敗，狀態碼: ' + xhr.status));
+                }
+            };
+            xhr.onerror = function() {
+                callback(new Error('網路錯誤'));
+            };
+            xhr.send();
+        }
+        // 使用回調地獄的方式進行多個依賴性請求
+        getData('https://jsonplaceholder.typicode.com/users/1', function(err, user) {
+            if (err) {
+                console.error('獲取用戶資料時出錯:', err);
+            } else {
+                console.log('用戶資料:', user);
+                getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id, function(err, posts) {
+                    if (err) {
+                        console.error('獲取用戶的帖子時出錯:', err);
+                    } else {
+                        console.log('用戶的帖子:', posts);
+                        if (posts.length === 0) {
+                            console.log('此用戶沒有任何帖子。');
+                            return;
+                        }
+                        var firstPostId = posts[0].id;
+                        getData('https://jsonplaceholder.typicode.com/comments?postId=' + firstPostId, function(err, comments) {
+                            if (err) {
+                                console.error('獲取帖子的評論時出錯:', err);
+                            } else {
+                                console.log('帖子的評論:', comments);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+----
+
+使用fetch進行請求
+
+[source, javascript]
+----
+// 定義一個使用 fetch 的 getData 函數
+async function getData(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error('請求失敗，狀態碼: ' + response.status);
+    }
+    return response.json();  // 直接返回解析後的 JSON 數據
+}
+
+// 使用 async/await 進行異步操作
+async function fetchUserData() {
+    try {
+        const user = await getData('https://jsonplaceholder.typicode.com/users/1');
+        console.log('用戶資料:', user);
+
+        const posts = await getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id);
+        console.log('用戶的帖子:', posts);
+
+        if (posts.length === 0) {
+            console.log('此用戶沒有任何帖子。');
+            return;
+        }
+
+        const comments = await getData('https://jsonplaceholder.typicode.com/comments?postId=' + posts[0].id);
+        console.log('帖子的評論:', comments);
+    } catch (err) {
+        console.error('發生錯誤:', err);
+    }
+}
+
+// 執行異步函數
+fetchUserData();
+----
