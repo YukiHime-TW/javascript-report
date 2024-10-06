@@ -1,4 +1,4 @@
-# 各區塊負責人: (請補上自己的姓名)
+# 各區塊負責人: 
 
 01 柯昕翰: 變數與作用域 + IIFE  
 02 林蔚博: XMLHttpRequest/fetch、Arrow Function  
