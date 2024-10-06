@@ -308,24 +308,24 @@ fetch('https://httpbin.org/post', {
         // 使用回調地獄的方式進行多個依賴性請求
         getData('https://jsonplaceholder.typicode.com/users/1', function(err, user) {
             if (err) {
-                console.error('獲取用戶資料時出錯:', err);
+                console.error('獲取使用者資料時出現錯誤:', err);
             } else {
-                console.log('用戶資料:', user);
+                console.log('使用者資料:', user);
                 getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id, function(err, posts) {
                     if (err) {
-                        console.error('獲取用戶的帖子時出錯:', err);
+                        console.error('獲取使用者的貼文時出現錯誤:', err);
                     } else {
                         console.log('用戶的帖子:', posts);
                         if (posts.length === 0) {
-                            console.log('此用戶沒有任何帖子。');
+                            console.log('此使用者沒有任何貼文。');
                             return;
                         }
                         var firstPostId = posts[0].id;
                         getData('https://jsonplaceholder.typicode.com/comments?postId=' + firstPostId, function(err, comments) {
                             if (err) {
-                                console.error('獲取帖子的評論時出錯:', err);
+                                console.error('獲取貼文的評論時出現錯誤:', err);
                             } else {
-                                console.log('帖子的評論:', comments);
+                                console.log('貼文的評論:', comments);
                             }
                         });
                     }
@@ -351,18 +351,18 @@ async function getData(url) {
 async function fetchUserData() {
     try {
         const user = await getData('https://jsonplaceholder.typicode.com/users/1');
-        console.log('用戶資料:', user);
+        console.log('使用者資料:', user);
 
         const posts = await getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id);
-        console.log('用戶的帖子:', posts);
+        console.log('使用者的貼文:', posts);
 
         if (posts.length === 0) {
-            console.log('此用戶沒有任何帖子。');
+            console.log('此使用者沒有任何貼文。');
             return;
         }
 
         const comments = await getData('https://jsonplaceholder.typicode.com/comments?postId=' + posts[0].id);
-        console.log('帖子的評論:', comments);
+        console.log('貼文的評論:', comments);
     } catch (err) {
         console.error('發生錯誤:', err);
     }
