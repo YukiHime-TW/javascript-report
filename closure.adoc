@@ -1,0 +1,111 @@
+= JavaScript 中的閉包
+閉包是 JavaScript 中非常重要的概念。透過理解靜態作用域和閉包，可以在開發中解決許多實際問題。
+
+== 什麼是靜態作用域？
+
+**靜態作用域**（也稱為**詞法作用域**）是指 JavaScript 的作用域在程式碼撰寫時就已經確定，並且在執行過程中不會改變。例如：
+
+[source, js]
+----
+function fn1() {
+  console.log(a);
+}
+function fn2() {
+  var a = 1;
+  fn1();
+}
+fn2(); // ReferenceError: a is not defined
+----
+
+在這個例子中，`fn1` 和 `fn2` 的作用域是獨立的，因此 `fn1` 無法訪問到 `fn2` 中的變數 `a`。
+
+但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：
+
+[source, js]
+----
+function sayHi() {
+  var name = '小明';
+
+  function addString() {
+    console.log(`${name} 你好`);  // 取用外層的變數
+  }
+  addString();
+}
+sayHi(); // "小明 你好"
+----
+
+在這裡，`addString` 可以取用 `sayHi` 中的變數 `name`，這就形成了閉包。閉包讓內部函式能保留並使用外部函式的變數。
+
+== 閉包的用途：創建私有變數
+
+閉包常用於**創建私有變數**，使得這些變數只能由特定函式訪問，這樣可以避免不必要的修改，增強資料的安全性。
+例如：
+
+[source, js]
+----
+function createCounter() {
+  var count = 0;
+  return function () {
+    count++;
+    console.log(count);
+  };
+}
+
+const counter = createCounter();
+counter(); // 1
+counter(); // 2
+----
+
+在這裡，`count` 是 `createCounter` 的私有變數，只有返回的內部函式可以訪問它。確保 `count` 的值不會被外部程式碼隨意修改。
+
+== 閉包實際的應用
+
+透過閉包，可以創建多個相互獨立的計數器，每個計數器的變數互不干擾：
+
+[source, js]
+----
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+counter1(); // 1
+counter1(); // 2
+
+counter2(); // 1
+----
+
+在這個例子中，`counter1` 和 `counter2` 各自擁有自己的 `count` 變數，因此兩者的計數互不影響。
+
+== 閉包的實戰應用：只允許執行一次的函式
+
+另一個現代 JavaScript 中閉包的典型應用是創建**只允許執行一次的函式**（例如初始化操作）。閉包可以幫助我們保留一個狀態，確保某些操作只進行一次。
+
+[source, js]
+----
+function once(fn) {
+  let executed = false;
+  return function (...args) {
+    if (!executed) {
+      executed = true;
+      return fn(...args);
+    }
+  };
+}
+
+const initialize = once(() => {
+  console.log('初始化完成');
+});
+
+initialize(); // "初始化完成"
+initialize(); // 不會再次執行
+----
+
+在這個例子中，`once` 函式創建了一個閉包，變數 `executed` 在內部函式中保留並管理，確保 `fn` 只會被執行一次。這在需要保證某些邏輯只執行一次的場景中非常實用，例如初始化設定、資源加載等。
+
+== 閉包的優勢
+
+- **私有變數**：讓變數只能被特定函式訪問，保護資料安全，避免被外部程式碼意外修改。
+- **保持狀態**：閉包可以保持函式執行後的狀態，比如計數器中的 `count`。
+- **靈活應用**：閉包可以在計數器、事件監聽、狀態管理等多種場景中應用。
+
+閉包在實際開發中也能提高程式的模組化和安全性，因此深入理解閉包對於 JavaScript 開發者來說是非常重要的。
+
