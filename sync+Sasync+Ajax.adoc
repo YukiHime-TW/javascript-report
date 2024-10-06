@@ -179,13 +179,13 @@ Macrotask - setTimeout 2
 
 * `document.getElementById('content').innerHTML`更改 content 這個 <div> 元素的內容，將其覆蓋為新的 <h3> 和 <p> 元素。
 
-== AJAX 的實現方式
+=== AJAX 的實現方式
 
-=== 原生技術的介紹
+==== 最原始的方式
 
 * **XMLHttpRequest**：
-  最原始的 AJAX 實現方式，早期實現 AJAX 請求的主要手段，有助於理解 AJAX 的工作原理。
-
+  * 需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
+  
   [source, javascript]
   ----
   const xhr = new XMLHttpRequest();
@@ -201,7 +201,7 @@ Macrotask - setTimeout 2
   ----
 
 * **Fetch API**：
-  現代的替代方案，相較於 XMLHttpRequest 更加簡潔、語法更直觀，使用 **Promise** 進行異步操作。
+  * 比較現代的方式，使用 Promise 來進行非同步操作。比  `XMLHttpRequest` 更加簡潔。
 
   [source, javascript]
   ----
@@ -211,12 +211,10 @@ Macrotask - setTimeout 2
       .catch(error => console.error('Error:', error));
   ----
 
-=== 工具與框架
-
-在了解了基礎的實現方式後，可以介紹一些基於原生技術的工具，這些工具使得 AJAX 的使用更加高效和方便：
+==== 工具與框架
 
 * **Axios**：
-  基於 **Promise** 的 HTTP 客戶端，封裝了底層的請求，提供了更友好的語法和更多功能（如錯誤處理、取消請求等），比 Fetch API 更強大。
+  基於 **Promise** 的 HTTP 客戶端，在 `Fetch API` 的基礎上進一步封裝，提供了一些更方便的功能，例如錯誤處理、請求取消等。
 
   [source, javascript]
   ----
@@ -226,7 +224,7 @@ Macrotask - setTimeout 2
   ----
 
 * **jQuery 的 $.ajax()**：
-  是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在相對較舊，主要出現在一些老項目中。
+  是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在主要出現在一些老項目。
 
   [source, javascript]
   ----
@@ -241,3 +239,16 @@ Macrotask - setTimeout 2
       }
   });
   ----
+
+=== 總結
+
+* Ajax是一套綜合性瀏覽器端技術，通過非同步請求來提升使用者體驗。
+
+|===
+| 實現方式        | 描述
+
+| XMLHttpRequest  | 最原始的 AJAX 實現方式，手動處理請求的建立、發送及回應。
+| Fetch API       | 現代的替代方案，語法簡潔，基於 Promise 進行非同步操作。
+| Axios           | 基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友好的語法及更多功能（如錯誤處理、取消請求等）。
+| jQuery 的 $.ajax() | 早期廣泛使用的 AJAX 方法，現在主要出現在一些老項目中。
+|===
