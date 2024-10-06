@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ex2</title>
+</head>
+<body>
+  <script>
+    console.log('Start'); // 同步任務 
+
+    setTimeout(() => {
+      console.log('Macrotask - setTimeout 1'); // 宏任務
+
+      Promise.resolve().then(() => {
+        console.log('Microtask inside Macrotask 1'); // 微任務在宏任務內部創建
+      });
+
+    }, 0);
+
+    setTimeout(() => {
+      console.log('Macrotask - setTimeout 2'); // 第二個宏任務
+    }, 0);
+
+    Promise.resolve().then(() => {
+      console.log('Microtask - Promise 1'); // 微任務
+    });
+
+    console.log('End'); // 同步任務
+  </script>
+</body>
+</html>

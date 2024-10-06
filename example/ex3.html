@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ex3-Ajax</title>
+    <style>
+        #content {
+            border: 2px solid #967474;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>靜態標題</h1>
+    <p>靜態內容</p>
+    <button onclick="loadData(1)">更新成內容1</button>
+    <button onclick="loadData(2)">更新成內容2</button>
+    <button onclick="loadData(3)">更新成內容3</button>
+    <div id="content">
+        <h3>原始標題</h3>
+        <p>原始內文</p>
+    </div>
+
+    <script>
+      function loadData(postId) {
+          fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+              .then(response => response.json())
+              .then(data => {
+                  document.getElementById('content').innerHTML = `
+                      <h3>${data.title}</h3>
+                      <p>${data.body}</p>
+                  `;
+              })
+              .catch(error => console.error('Error:', error));
+      }
+    </script>
+</body>
+</html>

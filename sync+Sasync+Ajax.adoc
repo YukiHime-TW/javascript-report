@@ -1,0 +1,155 @@
+== 同步/非同步差異
+
+=== 舉例生活化的例子
+
+* **同步（在原地等待）**：就像你在咖啡廳點餐後，**在原地等待店員**做完咖啡，拿到咖啡後才做下一件事情。
+所以同步的特性：**必須等待當前的任務完成，才做下一件事情**。
+
+* **非同步（先回座位處理事情）**：你在咖啡廳點完餐後，**回到座位**，打開電腦處理其他事情，等到**店員叫號**的時候再去拿咖啡。
+所以非同步的特性：**在等待某個任務的完成期間，可以處理其他任務**。
+
+image::images/img1.png[同步非同步]
+
+=== 在瀏覽器中的同步載入
+
+* link:http://127.0.0.1:5500/ex1.html[簡單HTML的例子(同步)]
+* link:http://127.0.0.1:5500/ex1-1.html[簡單HTML的例子(非同步)]
+
+
+[source,html]
+----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="ex1.jpg" type="icon">
+    <title>Example1</title>
+</head>
+<body>
+    <h1>範例1</h1>
+    <!--為了明顯差異才放這-->
+    <script src="all.js"></script>
+    <img src="ex1.jpg" width="400px" alt="這裡還不會看到圖片">
+</body>
+</html>
+----
+* 這個範例想說明
+  . 瀏覽器會請求整個HTML文件，並逐行解析。在解析的過程中，如果遇到圖片或CSS等外部資源時，瀏覽器會發出請求來載入這些資源，並同時繼續解析其餘的HTML。
+  . 當遇到JavaScript檔案時，如果沒有使用 `async` 或 `defer` 屬性，瀏覽器會暫停解析HTML，直到JavaScript載入並執行完成，才會繼續解析剩餘的HTML。因此，當JavaScript需要執行時間較久，可能會造成阻塞(Blocking)，導致使用者感覺頁面卡住。
+
+image::images/img2.png[依序]
+
+- link:https://developer.mozilla.org/zh-CN/docs/Glossary/Parse[參考資料1]
+link:https://html.spec.whatwg.org/multipage/images.html#attributes-common-to-source-and-img-elements[參考資料2]
+
+== EventLoop、CallBack與非同步的關係
+
+* 當遇到非同步操作時，Callback 函式在 **Event Loop 管理下**，會被丟到外面，等同步操作完成後，Event Loop 再從 Queue 中取出 Callback 函式執行。
+
+=== 以 setTimeout() 函式例子來解釋
+
+* 一般情況下，同步的程式碼會到 Call Stack（後進先出）內逐一執行。
+* link:https://developer.mozilla.org/en-US/docs/Glossary/Call_stack[參考資料3]
+
+image::images//img3.png[同步]
+
+* 當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 Callback 函式交給 Web API 進行計時。等計時時間到後，Callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。
+
+image::images//img4.png[非同步]
+
+=== Queue 又細分為 Microtask（微任務）、Macrotask（宏任務）
+
+* macrotask（就是 task）是指比較大型且需要等待的非同步操作。常見的 macrotask 包括：
+    * 從 `<script src="...">` 外部下載的 script
+    * 各種 Web APIs，例如 setTimeout 的 callback function
+    * Ajax callback function
+
+* microtask 是比宏任務更輕量級的任務。包含：
+    * promise `.then/catch/finally` 中的 callback function
+    * `queueMicrotask(func)` 中的 func
+
+**執行順序為：同步任務 → 微任務 → 宏任務**
+
+image::images//queue.gif[流程]
+
+* link:https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop[參考資料4]
+
+* 每次 Macrotask 還會檢查 Microtask
+
+[source,javascript]
+----
+console.log('Start'); // 同步任務
+
+setTimeout(() => {
+  console.log('Macrotask - setTimeout 1'); // 宏任務
+
+  Promise.resolve().then(() => {
+    console.log('Microtask inside Macrotask 1'); // 微任務在宏任務內部創建
+  });
+
+}, 0);
+
+setTimeout(() => {
+  console.log('Macrotask - setTimeout 2'); // 第二個宏任務
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('Microtask - Promise 1'); // 微任務
+});
+
+console.log('End'); // 同步任務
+----
+
+==== 輸出結果
+[source,plaintext]
+----
+Start
+End
+Microtask - Promise 1
+Macrotask - setTimeout 1
+Microtask inside Macrotask 1
+Macrotask - setTimeout 2
+----
+
+== Ajax
+
+=== Ajax 介紹
+* Ajax 是 Asynchronous JavaScript and XML 的縮寫，並不是單一的技術，而是一套綜合性的瀏覽器端網頁開發技術。
+* 是因為 Google 在 2005 年推出 Gmail 服務時採用此技術而知名。
+
+=== Ajax 提升使用者體驗
+1. 網站性能優化：使用 Ajax 實現動態載入
+    * 傳統的網站在瀏覽不同頁面時，每次都需要向伺服器發送請求並等待回應，瀏覽器還需要重新渲染整個頁面。但使用 Ajax，可以只更新頁面上的某些部分，而不是整個頁面。
+    * 動態載入例子：購物網內，點不同商品只有商品詳細訊息被更新，其他保持不變。
+2. 使用者體驗改善：使用 Ajax 實現無刷新更新
+    * 傳統的表單提交會導致瀏覽器重新載入頁面。但使用 Ajax 可以在不刷新頁面的情況下提交數據，並更新部分內容。
+    * 無刷新更新例子：搜尋引擎中的關鍵字建議。
+
+* 下面 link:http://127.0.0.1:5500/ex3.html[例子] 是 Ajax 的部分更新
+
+[source,html]
+----
+<h1>靜態標題</h1>
+<p>靜態內容</p>
+<button onclick="loadData(1)">更新成內容1</button>
+<button onclick="loadData(2)">更新成內容2</button>
+<button onclick="loadData(3)">更新成內容3</button>
+<div id="content">
+    <h3>原始標題</h3>
+    <p>原始內文</p>
+</div>
+<script>
+  function loadData(postId) {
+      fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById('content').innerHTML = `
+                  <h3>${data.title}</h3>
+                  <p>${data.body}</p>
+              `;
+          })
+          .catch(error => console.error('Error:', error));
+  }
+</script>
+----
