@@ -350,6 +350,7 @@ try {
 ----
 
 == 變數與作用域
+
 === var/let/const 差異
 
 在JavaScript，有三種變數宣告的方式: var, let, const，其中 ES6 後新增了let, const，他們與原先的var最主要的差別在於:
@@ -644,6 +645,7 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 |===
 
 == 函式
+
 === 立即調用函式 IIFE (Immediately Invoked Function Expression)
 JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
 
@@ -1142,6 +1144,7 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 ----
 
 == 非同步
+
 === 同步/非同步差異
 ==== 舉例生活化的例子
 
