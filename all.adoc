@@ -351,7 +351,7 @@ try {
 
 == 變數與作用域
 
-== var / let / const 差異
+=== var / let / const 差異
 在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
 
 .區塊作用域 (Block-Level Scope)
@@ -362,9 +362,9 @@ try {
 .函式作用域 (Function-Level Scope)
 - var
 
-
 === let / const 的宣告使用
 簡單說，let用於宣告變數，const用於宣告常數
+
 [source, javascript]
 ----
 {
@@ -377,6 +377,7 @@ try {
     console.log(dessert2);
 }
 ----
+
 [source, javascript]
 ----
 {
@@ -387,6 +388,7 @@ try {
 ----
 
 由以上範例可知，由let宣告的變數值是可以改變的，而由const宣告的常數則反之，且需要在宣告初始就賦值。但其實const還是有例外:
+
 [source, javascript]
 ----
 {
@@ -406,6 +408,7 @@ try {
 
 
 下面讓我們看看block的特性:
+
 [source, javascript]
 ----
 {
@@ -414,7 +417,9 @@ try {
 }
 console.log(dessert3); //ReferenceError: dessert3 is not defined
 ----
+
 可以看出let的作用域(Scope) 僅限於大括號內(block)，同理if、for迴圈、while迴圈也適用
+
 [source, javascript]
 ----
 for(let i=1 ; i<=5 ; i++){
@@ -423,10 +428,9 @@ for(let i=1 ; i<=5 ; i++){
 console.log(i); //ReferenceError: i is not defined
 ----
 
-'''
-
 === 函式作用域 (Function-Level Scope)
 var不同於前者，他的Scope並不僅只限於Block內
+
 [source, javascript]
 ----
 {
@@ -435,6 +439,7 @@ var不同於前者，他的Scope並不僅只限於Block內
 }
 console.log(dessert4); // cake
 ----
+
 [source, javascript]
 ----
 for(var varLoop=1 ; varLoop <= 5 ; varLoop++){
@@ -442,7 +447,9 @@ for(var varLoop=1 ; varLoop <= 5 ; varLoop++){
 }
 console.log(varLoop); // 6
 ----
+
 難道用var宣告就只能是全域變數嗎? 不不不，想讓他變成區域變數只需要包在函式(function)裡面即可:
+
 [source, javascript]
 ----
 function printDessert5() {
@@ -452,8 +459,10 @@ function printDessert5() {
 printDessert5(); 
 console.log(myDessert5); // ReferenceError: myDessert5 is not defined
 ----
+
 === var 的宣告使用
 相較於let/const，var存在一個允許重複宣告的特性:
+
 [source, javascript]
 ----
 {
@@ -463,6 +472,7 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
 }
 ----
 但 let / const 無法重複宣告:
+
 [source, javascript]
 ----
 {
@@ -472,8 +482,9 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
 }
 ----
 
-== Hoisting
+=== Hoisting
 較直觀的宣告邏輯大概都是先宣告才能使用，但因為Hoisting的特性卻能先使用再宣告
+
 [source, javascript]
 ----
 {
@@ -487,7 +498,9 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     printDessert();
 }
 ----
+
 甚至將宣告放在程式不會被執行的地方也可以:
+
 [source, javascript]
 ----
 {
@@ -504,9 +517,11 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     printDessert2(); // Pie
 }
 ----
+
 上面例子之所以能正常運行，是因為對於JavaScript，無論你在函數中的哪一行用 var 宣告變數，一律視為在函數的第一行宣告，這也是為什麼第二例子的宣告還是合法的，而此正是hoisting(抬升)
 
 那再看看下面的例子:
+
 [source, javascript]
 ----
 {
@@ -519,10 +534,12 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     printDessert3();
 }
 ----
+
 由上述可以看到，被hoisting上去的其實只有" var myDessert; "，賦值(把值指派給變數) 的動作不會 hoisting。
 
 === 函式的Hoisting
 其實函式也是能Hoisting的(先使用再宣告):
+
 [source, javascript]
 ----
 {
@@ -535,8 +552,10 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     
 }
 ----
+
 看來對於JavaScript，函式的宣告也都會先被提升到最前面
 再來看看一個有趣的例子:
+
 [source, javascript]
 ----
 {
@@ -555,13 +574,15 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
 
 }
 ----
+
 這個特性可以解決一個問題，也就是兩個函數需要互相呼叫彼此的狀態，也就是 A() 裡面會呼叫到 B()，而 B() 裡面會呼叫的 A() 的遞迴狀況(Cycling Recursion)。
 
-== Temporal Dead Zone, TDZ
+=== Temporal Dead Zone, TDZ
 在JavaScript中，當我們使用 let 或 const 宣告某個變數或常數時，在該變數或常數還沒有被賦予值之前會產生一段它們不能被使用的狀況，這段時間就是所謂的 *暫時性死區* (Temporal Dead Zone)的情況。
 
-=== 為什麼有TDZ
+==== 為什麼有TDZ
 在 ES6 中引入了 let 和 const，它們不同於 var，因為 var 變數會被提升，但它們的值會在定義之前就可以被訪問，而這通常會導致不可預測的錯誤。為了解決這個問題，JavaScript 引入了 TDZ 概念來限制 let 和 const 變數在初始化之前的使用，從而提高代碼的安全性和可讀性。
+
 [source, javascript]
 ----
 {
@@ -570,7 +591,8 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     console.log(myDessert5); // muffin
 }
 ----
-=== TDZ的行為
+
+==== TDZ的行為
 當一個變數使用 let 或 const 宣告時，它在作用域的最頂部被"標記"為已存在，但不會被初始化。只有當執行到宣告語句時，變數才會被初始化。在變數初始化之前，它位於 TDZ 中，不能被訪問。
 
 [source, javascript]
@@ -583,6 +605,7 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     
 }
 ----
+
 [source, javascript]
 ----
 {
@@ -597,13 +620,14 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
     }
 }
 ----
-=== TDZ小結
+
+==== TDZ小結
 - TDZ 是指在變數被宣告和初始化之間的時間段，這段時間內變數不可訪問。
 - TDZ 只與 let 和 const 宣告相關。
 - 在 TDZ 期間訪問變數會拋出 ReferenceError 錯誤。
 - var 不受 TDZ 限制，因為它會被提升並初始化為 undefined。
 
-== 總結
+==== 總結
 
 [cols="1,1,1,1", options="header"]
 |===
