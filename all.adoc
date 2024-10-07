@@ -359,7 +359,7 @@ try {
 
 Custom Error也可以使用深層繼承達到不同領域的錯誤類別
 
-[js]
+[source,javascript]
 ----
 class ApplicationError extends Error { // 通用的應用程式錯誤類別
     constructor(message) {
@@ -1296,7 +1296,7 @@ async function inner() {
     }
 
 }
-inner();
+inner(); //我抓到的錯誤 Error: 這是非同步中的錯誤
 ----
 
 2.直接在call back裡面try catch
@@ -1319,11 +1319,9 @@ async function inner() {
     }
 
 }
-inner();
+inner(); //這是callback中的錯誤
 
 ----
-
-如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
 
 === Promise
 一個非同步操作的最終完成（或失敗）及其結果值。 +
@@ -2015,7 +2013,7 @@ console.log(this === window)  //true
  function run() {
     console.log(this === window);
 }
-run();
+run(); //true
 
 ----
 
@@ -2237,7 +2235,7 @@ var 聲明的變量是函式作用域，因此，在循環結束後，i 的值�
 
 **靜態作用域**（也稱為**詞法作用域**）是指 JavaScript 的作用域在程式碼撰寫時就已經確定，並且在執行過程中不會改變。例如：
 
-[source, js]
+[source,javascript]
 ----
 function fn1() {
   console.log(a);
@@ -2253,7 +2251,7 @@ fn2(); // ReferenceError: a is not defined
 
 但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：
 
-[source, js]
+[source,javascript]
 ----
 function sayHi() {
   var name = '小明';
@@ -2273,7 +2271,7 @@ sayHi(); // "小明 你好"
 閉包常用於**創建私有變數**，使得這些變數只能由特定函式訪問，這樣可以避免不必要的修改，增強資料的安全性。
 例如：
 
-[source, js]
+[source,javascript]
 ----
 function createCounter() {
   var count = 0;
@@ -2294,7 +2292,7 @@ counter(); // 2
 
 透過閉包，可以創建多個相互獨立的計數器，每個計數器的變數互不干擾：
 
-[source, js]
+[source,javascript]
 ----
 const counter1 = createCounter();
 const counter2 = createCounter();
@@ -2311,7 +2309,7 @@ counter2(); // 1
 
 另一個現代 JavaScript 中閉包的典型應用是創建**只允許執行一次的函式**（例如初始化操作）。閉包可以幫助我們保留一個狀態，確保某些操作只進行一次。
 
-[source, js]
+[source,javascript]
 ----
 function once(fn) {
   let executed = false;
@@ -2340,3 +2338,83 @@ initialize(); // 不會再次執行
 - **靈活應用**：閉包可以在計數器、事件監聽、狀態管理等多種場景中應用。
 
 閉包在實際開發中也能提高程式的模組化和安全性，因此深入理解閉包對於 JavaScript 開發者來說是非常重要的。
+
+=== 高階函式 (Higher-Order Function)
+
+高階函式定義上是指一個function可以做為參數傳遞，或是將函式作為返回值的函式，都可以稱做為高階函數
+
+==== 簡單範例
+
+* 接受函式當作參數
+
+[source,javascript]
+----
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+function processUserInputHOF(callback) {
+    const name = "Alice";
+    return callback(name);
+}
+
+console.log(processUserInputHOF(greet)); // Hello, Alice!
+----
+
+在上述範例中processUserInputHOF接收了greet函式做為參數使用，所以processUserInputHOF是一個高階函式
+
+* 將函式作為返回值
+
+[source,javascript]
+----
+function multiplyByHOF(factor) {
+    return function(numberHOF) {
+        return numberHOF * factor;
+    };
+}
+
+const multiplyByTwo = multiplyByHOF(2); //multiplyByHOF返回一個function
+console.log(multiplyByTwo(5)); // 計算結果為10
+----
+
+在上述範例中multiplyByHOF會返回一個function，所以multiplyByHOF是一個高階函式，此時multiplyByTwo就會變成一個function並傳遞參數給numberHOF
+
+==== javaScript自帶常用的高階函式
+
+* map(): 會將數組進行疊代並將內容當作參數給函式使用，並返回一個新的數組
+
+[source,javascript]
+----
+const numbers = [1, 2, 3];
+const doubled = numbers.map(function(num){
+    return num * 2;
+});
+console.log(doubled); // [2, 4, 6]
+----
+
+上述範例中map接收了一個function，所以map()是高階函式，並且對數組的內容進行處理
+
+* filter(): 會根據給定的條件判斷將數組的內容進行過濾，並將過濾後的數組返回
+
+[source,javascript]
+----
+const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(function(num){
+    return num % 2 === 0
+});
+console.log(evenNumbers); // [2, 4]
+----
+
+在上述範例filter()也是接收function做為參數，因此它也是個高階函數
+
+* 可以使用箭頭函式(Arrow Function)的方法讓程式碼更簡潔
+[source,javascript]
+----
+const numbers = [1, 2, 3];
+const doubled = numbers.map(num => num * 2)
+console.log(doubled); // [2, 4, 6]
+
+const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(num => num % 2 === 0)
+console.log(evenNumbers); // [2, 4]
+----
