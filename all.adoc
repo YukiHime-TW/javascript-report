@@ -359,7 +359,7 @@ try {
 
 Custom Error也可以使用深層繼承達到不同領域的錯誤類別
 
-[js]
+[source,javascript]
 ----
 class ApplicationError extends Error { // 通用的應用程式錯誤類別
     constructor(message) {
@@ -2194,7 +2194,7 @@ var 聲明的變量是函式作用域，因此，在循環結束後，i 的值�
 
 **靜態作用域**（也稱為**詞法作用域**）是指 JavaScript 的作用域在程式碼撰寫時就已經確定，並且在執行過程中不會改變。例如：
 
-[source, js]
+[source,javascript]
 ----
 function fn1() {
   console.log(a);
@@ -2210,7 +2210,7 @@ fn2(); // ReferenceError: a is not defined
 
 但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：
 
-[source, js]
+[source,javascript]
 ----
 function sayHi() {
   var name = '小明';
@@ -2230,7 +2230,7 @@ sayHi(); // "小明 你好"
 閉包常用於**創建私有變數**，使得這些變數只能由特定函式訪問，這樣可以避免不必要的修改，增強資料的安全性。
 例如：
 
-[source, js]
+[source,javascript]
 ----
 function createCounter() {
   var count = 0;
@@ -2251,7 +2251,7 @@ counter(); // 2
 
 透過閉包，可以創建多個相互獨立的計數器，每個計數器的變數互不干擾：
 
-[source, js]
+[source,javascript]
 ----
 const counter1 = createCounter();
 const counter2 = createCounter();
@@ -2268,7 +2268,7 @@ counter2(); // 1
 
 另一個現代 JavaScript 中閉包的典型應用是創建**只允許執行一次的函式**（例如初始化操作）。閉包可以幫助我們保留一個狀態，確保某些操作只進行一次。
 
-[source, js]
+[source,javascript]
 ----
 function once(fn) {
   let executed = false;
@@ -2306,7 +2306,7 @@ initialize(); // 不會再次執行
 
 * 接受函式當作參數
 
-[js]
+[source,javascript]
 ----
 function greet(name) {
     return `Hello, ${name}!`;
@@ -2324,7 +2324,7 @@ console.log(processUserInputHOF(greet)); // Hello, Alice!
 
 * 將函式作為返回值
 
-[js]
+[source,javascript]
 ----
 function multiplyByHOF(factor) {
     return function(numberHOF) {
@@ -2342,7 +2342,7 @@ console.log(multiplyByTwo(5)); // 計算結果為10
 
 * map(): 會將數組進行疊代並將內容當作參數給函式使用，並返回一個新的數組
 
-[js]
+[source,javascript]
 ----
 const numbers = [1, 2, 3];
 const doubled = numbers.map(function(num){
@@ -2355,7 +2355,7 @@ console.log(doubled); // [2, 4, 6]
 
 * filter(): 會根據給定的條件判斷將數組的內容進行過濾，並將過濾後的數組返回
 
-[js]
+[source,javascript]
 ----
 const numbers = [1, 2, 3, 4];
 const evenNumbers = numbers.filter(function(num){
@@ -2367,7 +2367,7 @@ console.log(evenNumbers); // [2, 4]
 在上述範例filter()也是接收function做為參數，因此它也是個高階函數
 
 * 可以使用箭頭函式(Arrow Function)的方法讓程式碼更簡潔
-[js]
+[source,javascript]
 ----
 const numbers = [1, 2, 3];
 const doubled = numbers.map(num => num * 2)
