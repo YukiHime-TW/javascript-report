@@ -1283,7 +1283,7 @@ XMLHttpRequest（簡稱 XHR）是一種在網頁中與伺服器進行資料交�
 
 * 特色
 
-** XHR基於事件，它通過監聽和處理不同的事件來管理請求的生命周期。這些事件主要依賴於回調函數（事件監聽器）來處理異步操作的結果。
+** XHR基於事件，它通過監聽和處理不同的事件來管理請求的生命周期。這些事件主要依賴於回調函數（事件監聽器）來處理非同步操作的結果。
 
 ** XHR 可以在後台發送請求，並在伺服器回應時處理資料，而不會阻塞用戶界面的操作。
 
@@ -1321,7 +1321,7 @@ function reqListener() {
 //將函數括載到load上
 xhr.onload = reqListener
 
-// 初始化一個 GET 請求 各項參數分別為：請求方法、URL、是否為異步執行
+// 初始化一個 GET 請求 各項參數分別為：請求方法、URL、是否為非同步執行
 xhr.open('GET', 'https://httpbin.org/get', true);
 
 // 發送請求
@@ -1378,7 +1378,7 @@ fetch(request) //只有url就會預設這個請求的HTTP請求方法是GET。
   });
 ----
 
-Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理異步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致Request中斷的狀況下才會出現rejected狀態。這也就是說，只要伺服器有回傳，它的回傳就都會是fulfilled狀態。
+Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理非同步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致Request中斷的狀況下才會出現rejected狀態。這也就是說，只要伺服器有回傳，它的回傳就都會是fulfilled狀態。
 
 ==== 直接使用XMLHttpRequest物件的問題與使用fetch的對比
 
@@ -1501,7 +1501,7 @@ async function getData(url) {
     return response.json();  // 直接返回解析後的 JSON 數據
 }
 
-// 使用 async/await 進行異步操作
+// 使用 async/await 進行非同步操作
 async function fetchUserData() {
     try {
         const user = await getData('https://jsonplaceholder.typicode.com/users/1');
@@ -1522,7 +1522,7 @@ async function fetchUserData() {
     }
 }
 
-// 執行異步函數
+// 執行非同步函數
 fetchUserData();
 ----
 
@@ -1670,9 +1670,9 @@ fetchUserData();
 * link:https://codedocs.org/what-is/ajax-programming[參考資料8 - Ajax (programming)]
 
 === Promise
-一個異步操作的最終完成（或失敗）及其結果值。 +
+一個非同步操作的最終完成（或失敗）及其結果值。 +
 
-在 Promise 出現之前，JavaScript 中的異步操作主要透過**回調函數**來實現。 +
+在 Promise 出現之前，JavaScript 中的非同步操作主要透過**回調函數**來實現。 +
 但回調函數的方式存在一些問題，例如**回調地獄問題**（也稱為"波動拳問題"）。 +
 
 `Promise` 的出現解決了回調地獄問題，讓代碼更加清晰，易於理解。 +
@@ -1927,7 +1927,7 @@ Promise.race([p5, p6]).then(
 
 === async/await
 
-`async/await` 是一種讓異步（非同步）操作更容易理解和管理的語法。它建立在 Promise 的基礎上，但提供了更簡潔、更直觀的方式來處理異步操作。
+`async/await` 是一種讓非同步（非同步）操作更容易理解和管理的語法。它建立在 Promise 的基礎上，但提供了更簡潔、更直觀的方式來處理非同步操作。
 
 ==== `async` 函數
 
@@ -2050,22 +2050,45 @@ f();
 
 [source,javascript]
 ----
-async function f() {
-  console.log("Start");
-  let result = await new Promise((resolve) => {
+// 模擬非同步函式，回傳一個 Promise，1秒後 resolve
+async function asyncFunction() {
+  console.log("Start of asyncFunction");
+
+  // 使用 await 等待 Promise 完成，但不阻塞 Event Loop
+  await new Promise((resolve) => {
     setTimeout(() => {
-      resolve("Hello! ExplainThis!");
+      console.log("Promise resolved after 1 second");
+      resolve();
     }, 1000);
   });
-  console.log(result); // "Hello! ExplainThis!"
-  console.log("End");
+
+  console.log("End of asyncFunction");
 }
 
-f();
+console.log("Start of script");
+
+// 執行 async 函式
+asyncFunction();
+
+// 此區域為同步代碼，會在 async 函式的 await 之前執行
+console.log("Synchronous log - This runs while waiting for Promise to resolve");
+
+// 非同步代碼，會放入 Event Loop 的 Task Queue
+setTimeout(() => {
+  console.log("Timeout callback - This runs after 500ms");
+}, 500);
+
+// 顯示 Event Loop 沒有被阻塞，這段代碼不受 await 的影響
+console.log("End of script");
+
 // 輸出：
-// Start
-// Hello! ExplainThis!
-// End
+// Start of script
+// Start of asyncFunction
+// Synchronous log - This runs while waiting for Promise to resolve
+// End of script
+// Promise resolved after 1 second
+// Timeout callback - This runs after 500ms
+// End of asyncFunction
 ----
 
 * `await` 可以與 `Promise.all()` 一起使用，以等待多個 Promise 同時完成：
@@ -2087,7 +2110,7 @@ f();
 // ExplainThis!
 ----
 
-使用 `async/await` 可以將異步程式碼寫成同步的形式，使得程式碼更加清晰易讀。
+使用 `async/await` 可以將非同步程式碼寫成同步的形式，使得程式碼更加清晰易讀。
 
 ==== 使用範例
 
@@ -2130,17 +2153,17 @@ getData("https://example.com/data");
 
 在這個例子中：
 
-. 使用 `async` 關鍵字定義一個異步函式，該函式會返回一個 `Promise` 對象。
-. 在異步函式中，使用 `await` 等待 `Promise` 的完成，並直接返回結果。
-. 使用 `try...catch` 捕獲異步操作中的錯誤，使得錯誤處理更加方便和直觀。
+. 使用 `async` 關鍵字定義一個非同步函式，該函式會返回一個 `Promise` 對象。
+. 在非同步函式中，使用 `await` 等待 `Promise` 的完成，並直接返回結果。
+. 使用 `try...catch` 捕獲非同步操作中的錯誤，使得錯誤處理更加方便和直觀。
 
-可以看出，使用 `async/await` 能夠使異步程式碼更加簡潔、易讀。
+可以看出，使用 `async/await` 能夠使非同步程式碼更加簡潔、易讀。
 
 ==== `async/await` 與 `Promise` 的比較
 
-* **語法**: `async/await` 提供了更簡潔、更直觀的語法，使得異步程式碼更易讀和維護。`Promise` 則需要使用 `then` 和 `catch` 方法來處理結果和錯誤，語法上較為冗長。
+* **語法**: `async/await` 提供了更簡潔、更直觀的語法，使得非同步程式碼更易讀和維護。`Promise` 則需要使用 `then` 和 `catch` 方法來處理結果和錯誤，語法上較為冗長。
 * **錯誤處理**: 在 `async/await` 中，可以直接使用 `try...catch` 來捕獲錯誤，而在 `Promise` 中需要使用 `catch` 方法。
-* **程式碼流程**: `async/await` 可以使異步程式碼看起來更像同步程式碼，更容易閱讀和理解。`Promise` 的程式碼流程則較為不連貫。
+* **程式碼流程**: `async/await` 可以使非同步程式碼看起來更像同步程式碼，更容易閱讀和理解。`Promise` 的程式碼流程則較為不連貫。
 
 
 === try…​catch 與非同步
@@ -2172,7 +2195,7 @@ try catch 可以處理同步的程式碼，以下有數種可以處理非同步�
 ----
 async function awaitrun() {
     console.log('run')
-    throw new Error("這是異步中的錯誤");
+    throw new Error("這是非同步中的錯誤");
 }
 async function inner() {
     try {
