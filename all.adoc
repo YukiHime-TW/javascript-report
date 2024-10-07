@@ -1442,53 +1442,53 @@ XHR的使用皆**基於回調函數**，假設我要取得某位使用者的貼�
 不囉說,直接上圖
 [source, javascript]
 ----
-function getData(url, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                callback(null, data);
-            } catch (e) {
-                callback(new Error('解析 JSON 失敗'));
-            }
-        } else {
-            callback(new Error('請求失敗，狀態碼: ' + xhr.status));
-        }
-    };
-    xhr.onerror = function () {
-        callback(new Error('網路錯誤'));
-    };
-    xhr.send();
-}
-// 使用回調波動拳
-getData('https://jsonplaceholder.typicode.com/users/1', function (err, user) {
-    if (err) {
-        console.error('獲取使用者資料時出現錯誤:', err);
-    } else {
-        console.log('使用者資料:', user);
-        getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id, function (err, posts) {
-            if (err) {
-                console.error('獲取使用者的貼文時出現錯誤:', err);
-            } else {
-                console.log('使用者的貼文:', posts);
-                if (posts.length === 0) {
-                    console.log('此使用者沒有任何貼文。');
-                    return;
+ function getData(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        callback(null, data);
+                    } catch (e) {
+                        callback(new Error('解析 JSON 失敗'));
+                    }
+                } else {
+                    callback(new Error('請求失敗，狀態碼: ' + xhr.status));
                 }
-                var firstPostId = posts[0].id;
-                getData('https://jsonplaceholder.typicode.com/comments?postId=' + firstPostId, function (err, comments) {
+            };
+            xhr.onerror = function() {
+                callback(new Error('網路錯誤'));
+            };
+            xhr.send();
+        }
+        // 使用回調波動拳
+        getData('https://jsonplaceholder.typicode.com/users/1', function(err, user) {
+            if (err) {
+                console.error('獲取使用者資料時出現錯誤:', err);
+            } else {
+                console.log('使用者資料:', user);
+                getData('https://jsonplaceholder.typicode.com/posts?userId=' + user.id, function(err, posts) {
                     if (err) {
-                        console.error('獲取貼文的評論時出現錯誤:', err);
+                        console.error('獲取使用者的貼文時出現錯誤:', err);
                     } else {
-                        console.log('貼文的評論:', comments);
+                        console.log('使用者的貼文:', posts);
+                        if (posts.length === 0) {
+                            console.log('此使用者沒有任何貼文。');
+                            return;
+                        }
+                        var firstPostId = posts[0].id;
+                        getData('https://jsonplaceholder.typicode.com/comments?postId=' + firstPostId, function(err, comments) {
+                            if (err) {
+                                console.error('獲取貼文的評論時出現錯誤:', err);
+                            } else {
+                                console.log('貼文的評論:', comments);
+                            }
+                        });
                     }
                 });
             }
         });
-    }
-});
 ----
 
 使用fetch進行請求的話看起來不會那麼凌亂，並且因為基於Promise，可以使用tryCatch進行錯誤處理。
@@ -1581,32 +1581,32 @@ fetchUserData();
 ===== 最原始的方式
 
 * **XMLHttpRequest**：
-  * 需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
+* 需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
   
-  [source, javascript]
-  ----
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
-  xhr.onload = function() {
-      if (xhr.status === 200) {
-          console.log(JSON.parse(xhr.responseText));
-      } else {
-          console.error('Request failed.');
-      }
-  };
-  xhr.send();
-  ----
+[source,javascript]
+----
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        console.log(JSON.parse(xhr.responseText));
+    } else {
+        console.error('Request failed.');
+    }
+};
+xhr.send();
+----
 
 * **Fetch API**：
-  * 比較現代的方式，使用 Promise 來進行非同步操作。比  `XMLHttpRequest` 更加簡潔。
+* 比較現代的方式，使用 Promise 來進行非同步操作。比  `XMLHttpRequest` 更加簡潔。
 
-  [source, javascript]
-  ----
-  fetch('https://jsonplaceholder.typicode.com/posts/1')
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-  ----
+[source,javascript]
+----
+fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+----
 
 ===== 工具與框架
 
