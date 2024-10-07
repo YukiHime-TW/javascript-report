@@ -166,7 +166,7 @@ fetch("https://explainthis.com/data")
   .finally(() => {
     console.log("close loader");
   });
-// 因為沒有實作fetch()，所以這段程式碼無法執行，僅作為範例參考。
+// 因為explainthis.com/data實際上不存在，所以會進入catch，最後執行finally
 ----
 
 常用的Promise操作有：
@@ -295,5 +295,221 @@ Promise.race([p5, p6]).then(
 ----
 
 === async/await
+
+`async/await` 是一種讓異步（非同步）操作更容易理解和管理的語法。它建立在 Promise 的基礎上，但提供了更簡潔、更直觀的方式來處理異步操作。
+
+==== `async` 函數
+
+* `async` 函數是一個返回 Promise 的函數，而非直接返回函式執行結果。
+
+* 下方的普通函式 `f1()` 會直接返回字串 `"Hello! ExplainThis!"`：
+
+[source,javascript]
+----
+function f1() {
+  return "Hello! ExplainThis!";
+}
+
+f1(); // 輸出: "Hello! ExplainThis!"
+----
+
+* 而 `async` 函數 `f2()` 會返回一個 Promise 物件，並且 Promise 的狀態是 `fulfilled`，返回值是 `"Hello! ExplainThis!"`：
+
+[source,javascript]
+----
+async function f2() {
+  return "Hello! ExplainThis!";
+}
+
+f2(); // 輸出: Promise {<fulfilled>: 'Hello! ExplainThis!'}
+----
+
+* 下方程式碼與上方程式碼的寫法是相同的，因為使用 `async` 函數時，會自動將返回值包裝成 Promise 物件：
+
+[source,javascript]
+----
+function f3() {
+  return Promise.resolve("Hello! ExplainThis!");
+}
+
+f3(); // 輸出: Promise {<fulfilled>: 'Hello! ExplainThis!'}
+----
+
+由於 `async` 函數返回的是 Promise 對象，所以可以使用 `then` 方法進行鏈式調用：
+
+[source,javascript]
+----
+async function f2() {
+  return "Hello! ExplainThis!";
+}
+
+f2().then((result) => {
+  console.log(result); // "Hello! ExplainThis!"
+});
+----
+
+==== `await` 運算子
+
+`await` 是一個運算子，用於等待一個 Promise 完成或拒絕。它只能在 `async` 函數中或模組的頂層使用。
+
+* 當使用 `await` 運算子時，會暫停當前 `async` 函數的執行，直到 `await` 後的 Promise 完成或拒絕：
+
+[source,javascript]
+----
+async function getData() {
+  const res = await fetch("https://example.com/data");
+  const data = await res.json();
+  console.log(data);
+}
+
+getData();
+----
+
+=== 使用注意事項
+
+* `await` 只能在 `async` 函數中使用，否則會拋出 **SyntaxError** 錯誤：
+
+[source,javascript]
+----
+function f() {
+  let promise = Promise.resolve("Hello! ExplainThis!");
+  let result = await promise;
+}
+
+// Uncaught SyntaxError: await is only valid in async functions and the top level bodies of modules
+----
+
+* **頂層 `await`** 是 JavaScript 中引入的新功能，允許在模組的頂層使用 `await` 運算子：
+
+[source,javascript]
+----
+const data = await getData();
+// ...使用data
+----
+
+* `await` 會等待 Promise 完成，若 Promise 被拒絕，`await` 會拋出拒絕的值並中斷當前 `async` 函數的執行：
+
+[source,javascript]
+----
+async function f() {
+  try {
+    let promise = Promise.reject("Hello! ExplainThis!");
+    let result = await promise;
+  } catch (e) {
+    console.log(e); // "Hello! ExplainThis!"
+  }
+}
+
+f();
+----
+
+* `await` 只能等待 Promise 物件，如果不是 Promise 物件，`await` 會將其轉換為已解析的 Promise：
+
+[source,javascript]
+----
+async function f() {
+  let result = await "Hello! ExplainThis!";
+  console.log(result); // "Hello! ExplainThis!"
+}
+
+f();
+----
+
+* `await` 會等待 Promise 完成，但不會阻塞事件循環：
+
+[source,javascript]
+----
+async function f() {
+  console.log("Start");
+  let result = await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("Hello! ExplainThis!");
+    }, 1000);
+  });
+  console.log(result); // "Hello! ExplainThis!"
+  console.log("End");
+}
+
+f();
+// 輸出：
+// Start
+// End
+// Hello! ExplainThis!
+----
+
+* `await` 可以與 `Promise.all()` 一起使用，以等待多個 Promise 同時完成：
+
+[source,javascript]
+----
+async function f() {
+  const [result1, result2] = await Promise.all([
+    new Promise((resolve) => setTimeout(() => resolve("Hello!"), 1000)),
+    new Promise((resolve) => setTimeout(() => resolve("ExplainThis!"), 2000)),
+  ]);
+  console.log(result1); // "Hello!"
+  console.log(result2); // "ExplainThis!"
+}
+
+f();
+// 輸出：
+// Hello!
+// ExplainThis!
+----
+
+使用 `async/await` 可以將異步程式碼寫成同步的形式，使得程式碼更加清晰易讀。
+
+==== 使用範例
+
+先來看一個使用 `Promise` 的例子：
+
+[source,javascript]
+----
+function getData(url) {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+}
+
+getData("https://example.com/data")
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));
+// 無法執行，因為實際上並沒有example.com/data這個網址，僅供參考
+----
+
+使用 `async/await` 重寫：
+
+[source,javascript]
+----
+async function getData(url) {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+getData("https://example.com/data");
+// 無法執行，因為實際上並沒有example.com/data這個網址，僅供參考
+----
+
+在這個例子中：
+
+. 使用 `async` 關鍵字定義一個異步函式，該函式會返回一個 `Promise` 對象。
+. 在異步函式中，使用 `await` 等待 `Promise` 的完成，並直接返回結果。
+. 使用 `try...catch` 捕獲異步操作中的錯誤，使得錯誤處理更加方便和直觀。
+
+可以看出，使用 `async/await` 能夠使異步程式碼更加簡潔、易讀。
+
+==== `async/await` 與 `Promise` 的比較
+
+* **語法**: `async/await` 提供了更簡潔、更直觀的語法，使得異步程式碼更易讀和維護。`Promise` 則需要使用 `then` 和 `catch` 方法來處理結果和錯誤，語法上較為冗長。
+* **錯誤處理**: 在 `async/await` 中，可以直接使用 `try...catch` 來捕獲錯誤，而在 `Promise` 中需要使用 `catch` 方法。
+* **程式碼流程**: `async/await` 可以使異步程式碼看起來更像同步程式碼，更容易閱讀和理解。`Promise` 的程式碼流程則較為不連貫。
+
 
 === try…​catch 與非同步
