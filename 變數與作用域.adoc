@@ -34,7 +34,7 @@ stanleydk4
 {
     const dessert8; //SyntaxError
     dessert8 = "cake";  
-    console.log(dessert2);
+    console.log(dessert8);
 }
 ----
 
@@ -45,7 +45,7 @@ stanleydk4
     const cake = {
         fruit: "apple"
     }
-    cake.fruit = "chrerry";
+    cake.fruit = "cherry";
     console.log(cake.fruit);
 }
 ----
@@ -64,7 +64,7 @@ stanleydk4
     let dessert3 = "cookie";
     console.log(dessert3);
 }
-console.log(dessert3); //ReferenceError: dessert is not defined
+console.log(dessert3); //ReferenceError: dessert3 is not defined
 ----
 可以看出let的作用域(Scope) 僅限於大括號內(block)，同理if、for迴圈、while迴圈也適用
 [source, javascript]
@@ -133,7 +133,7 @@ console.log(myDessert5); // ReferenceError: myDessert is not defined
         myDessert = "Pie";
         console.log(myDessert);
         
-        var mydessert;
+        var myDessert;
     }
     
     printDessert();
@@ -149,7 +149,7 @@ console.log(myDessert5); // ReferenceError: myDessert is not defined
         
         while(false){
             console.log("這裡不會被執行");
-            var mydessert2;
+            var myDessert2;
         }
     }
     
@@ -230,7 +230,7 @@ console.log(myDessert5); // ReferenceError: myDessert is not defined
 {
     console.log(myDessert6); //ReferenceError: myDessert6 is not defined
         
-    let mydessert6 = "pie";
+    let myDessert6 = "pie";
     
 }
 ----
