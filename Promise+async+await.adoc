@@ -1,0 +1,299 @@
+= JavaScript、函式、非同步
+
+== 運算相關
+
+=== Ternary Operator
+
+=== Nullish Coalescing Operator/Assignment
+
+=== Falsy
+
+=== Custom Error
+
+== 變數與作用域
+
+=== var/let/const 差異
+
+=== Hoisting
+
+=== Temporal Dead Zone, TDZ
+
+== 函式
+
+=== Immediately Invoked Function Expression, IIFE
+
+=== 高階函式 Higher-Order Function
+
+=== 閉包 Closure
+
+=== this
+
+=== Arrow Function
+
+== 非同步
+
+=== 同步/非同步差異
+
+=== XMLHttpRequest/fetch
+
+=== AJAX
+
+=== Promise
+一個異步操作的最終完成（或失敗）及其結果值。 +
+
+在 Promise 出現之前，JavaScript 中的異步操作主要透過**回調函數**來實現。 +
+但回調函數的方式存在一些問題，例如**回調地獄問題**（也稱為"波動拳問題"）。 +
+
+`Promise` 的出現解決了回調地獄問題，讓代碼更加清晰，易於理解。 +
+
+[source,javascript]
+----
+// 回調地獄
+callback(() => {
+  console.log("Hello!");
+  callback(() => {
+    console.log("Hello!");
+    callback(() => {
+      console.log("Hello!");
+      callback(() => {
+        console.log("Hello!");
+      }, 200);
+    }, 200);
+  }, 200);
+}, 200);
+----
+
+`Promise` 是一個構造函式，需要透過 `new` 來建立一個 Promise 實例。 +
+`Promise` 會接收一個被稱為 `executor` 的函式作為參數。 +
+
+[source,javascript]
+----
+new Promise((resolve, reject) => {
+  console.log("executor 立即執行"); // executor 立即執行
+});
+----
+
+`executor` 函式會立即執行，並接收兩個參數，分別是 `resolve` 與 `reject`。 +
+`resolve` 和 `reject` 是用來表示 Promise 的最終狀態。
+
+* `resolve` 用來表示 Promise 成功完成，並且返回結果值。
+* `reject` 用來表示 Promise 失敗，並且返回錯誤原因。
+
+[source,javascript]
+----
+function requestData(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (url === "explainthis.io") {
+        resolve("hello welcome to explain this");
+      } else {
+        reject("it is not explain this");
+      }
+    }, 3000);
+  });
+}
+
+// 1. 請求成功
+requestData("explainthis.io").then((res) => {
+    console.log(res); //hello welcome to explain this
+});
+
+// 2. 請求失敗
+requestData("explainthis.com").catch((e) => {
+    console.log(e); //it is not explain this
+});
+----
+
+Promise 的狀態只有三種，並且一定處於這三種狀態中的一種：
+
+* `pending`: 初始狀態，既不是成功，也不是失敗。
+* `fulfilled`: 表示操作成功完成。
+* `rejected`: 表示操作失敗。
+
+image::images//Promise.png[Promise 狀態]
+
+`Promise` 通過 `then` 方法和 `catch` 方法解決了回調地獄問題，並且 `then` 可以鏈式調用，這使得代碼更具可讀性。
+
+[source,javascript]
+----
+(function() {
+  function requestData(url) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (url === "explainthis.io") {
+          resolve("hello welcome to explainthis");
+        } else {
+          reject("it is not explainthis");
+        }
+      }, 3000);
+    });
+  }
+
+  requestData("explainthis.io")
+    .then((res) => {
+      console.log(res); //hello welcome to explainthis
+      return 1;
+    })
+    .then((res) => {
+      console.log(res); // 1
+      return 2;
+    })
+    .then((res) => {
+      console.log(res); // 2
+    })
+    .catch((e) => {
+      console.log(e); //it is not explainthis
+    });
+})();
+// 如果在控制台中輸入帶有 .then() 和 .catch() 的多行語句，它可能會在還未輸入完整的語句時執行，導致錯誤。
+// 因此這裡改為使用匿名函數包裹函數，以避免這種情況。
+----
+
+`finally` 方法不管 Promise 狀態如何最後都會執行，並且不接收任何參數。 +
+
+使用情境例如，一進入頁面就要顯示 loading，不管成功或失敗都要關閉 loading。 +
+這時就可以使用 `finally` 方法。
+[source,javascript]
+----
+fetch("https://explainthis.com/data")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error(error);
+  })
+  .finally(() => {
+    console.log("close loader");
+  });
+// 因為沒有實作fetch()，所以這段程式碼無法執行，僅作為範例參考。
+----
+
+常用的Promise操作有：
+
+* `Promise.all()`: 只有當所有 Promise 都成功時才會成功，一個失敗就會失敗。
+
+[source,javascript]
+----
+var p1 = Promise.resolve(3);
+var p2 = 1337;
+var p3 = new Promise((resolve, reject) => {
+    setTimeout(resolve, 100, "foo");
+});
+
+Promise.all([p1, p2, p3]).then((values) => {
+    console.log(values); 
+});
+
+//From console:
+// [3, 1337, "foo"]
+----
+
+* `Promise.allSettled()`: 等待所有 Promise 都完成（無論成功或失敗），都會回傳。
+
+[source,javascript]
+----
+const promise1 = new Promise((resolve, reject) => {
+    reject("fails 1");
+});
+
+const promise2 = new Promise((resolve, reject) => {
+    setTimeout(resolve, 500, "resolve 1");
+});
+
+const promise3 = new Promise((resolve, reject) => {
+    setTimeout(resolve, 100, "resolve 2");
+});
+
+Promise.allSettled([promise1, promise2, promise3]).then((value) => {
+    console.log(value);
+});
+
+/*
+From console:
+[
+  {"status":"rejected","reason":"fails 1"},
+  {"status":"fulfilled","value":"resolve 1"},
+  {"status":"fulfilled","value":"resolve 2"}
+]
+*/
+----
+
+* `Promise.any()`: 只要有一個 Promise 最先執行成功就會回傳最先執行成功的Promise結果，並且不會等待其他 Promise
+
+[source,javascript]
+----
+const pErr = new Promise((resolve, reject) => {
+  reject("總是失敗");
+});
+
+const pSlow = new Promise((resolve, reject) => {
+  setTimeout(resolve, 500, "最終完成");
+});
+
+const pFast = new Promise((resolve, reject) => {
+  setTimeout(resolve, 100, "很快完成");
+});
+
+Promise.any([pErr, pSlow, pFast]).then((value) => {
+  console.log(value);
+  // pFast 第一個resloved，所以輸出 "很快完成"
+});
+// 輸出：
+// 很快完成
+----
+
+* `Promise.race()`: 只要有一個 Promise 完成（無論成功或失敗）就會回傳其結果。
+
+[source,javascript]
+----
+var p1 = new Promise(function (resolve, reject) {
+    setTimeout(resolve, 500, "one");
+});
+var p2 = new Promise(function (resolve, reject) {
+    setTimeout(resolve, 100, "two");
+});
+
+Promise.race([p1, p2]).then(function (value) {
+    console.log(value); // "two"
+    // Both resolve, but p2 is faster
+});
+
+var p3 = new Promise(function (resolve, reject) {
+    setTimeout(resolve, 100, "three");
+});
+var p4 = new Promise(function (resolve, reject) {
+    setTimeout(reject, 500, "four");
+});
+
+Promise.race([p3, p4]).then(
+    function (value) {
+        console.log(value); // "three"
+        // p3 is faster, so it resolves
+    },
+    function (reason) {
+        // Not called
+    },
+);
+
+var p5 = new Promise(function (resolve, reject) {
+    setTimeout(resolve, 500, "five");
+});
+var p6 = new Promise(function (resolve, reject) {
+    setTimeout(reject, 100, "six");
+});
+
+Promise.race([p5, p6]).then(
+    function (value) {
+        // Not called
+    },
+    function (reason) {
+        console.log(reason); // "six"
+        // p6 is faster, so it rejects
+    },
+);
+----
+
+=== async/await
+
+=== try…​catch 與非同步

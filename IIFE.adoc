@@ -1,0 +1,127 @@
+IIFE (Immediately Invoked Function Expression)
+==============================================
+Author's Name
+stanleydk4
+
+== 立即調用函式 IIFE (Immediately Invoked Function Expression)
+
+JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
+
+IIFE格式長這樣：
+
+[source, javascript]
+----
+(function () {
+  // Code to be executed
+})();
+----
+在這種表達式中，函式定義與函式調用的括號是一起的，確保函式只會被執行一次，而不是定義後可以多次執行。在這個封閉的作用域中，變量和函式都不會污染全局環境。
+
+== IIFE的優點
+
+.創建局部作用域
+
+通過使用 IIFE 可以創建一個局部作用域，避免全局變量的污染。以下程式碼可以看到，在 IIFE 中，有一個局部變量 localVariable。localVariable 只能在 IIFE 內訪問，不能在 IIFE 外訪問
+[source, javascript]
+----
+var globalVariable = "global variable";
+
+(function () {
+  var localVariable = "local variable";
+  console.log(localVariable); // local variable
+})();
+
+console.log(localVariable); // ReferenceError: localVariable is not defined
+console.log(globalVariable); // global variable
+----
+
+.避免命名衝突
+IIFE 可以為變量創建了一個單獨的命名空間，避免函式名和變量名的衝突。
+[source, javascript]
+----
+var testIIFE = "I'm a global variable";
+
+(function () {
+  var testIIFE = "I'm a local variable";
+  console.log(testIIFE); // local variable
+})();
+
+console.log(testIIFE); // global variable
+----
+
+.模組化編程
+關鍵概念是將一段代碼封裝在一個函數中，並立即執行這個函數。這樣可以將變數和函數限制在 IIFE 的作用域內，避免與外部代碼的命名衝突，並且可以選擇性地暴露特定功能給外界。
+[source, javascript]
+----
+// 定義一個 IIFE 模組
+const myIIFEModule = (function () {
+    // 私有變數和函數
+    let privateVariable = 'This is a private variable';
+
+    function privateFunction() {
+        console.log(privateVariable);
+    }
+
+    // 公開的 API
+    return {
+        publicVariable: 'This is a public variable',
+
+        publicFunction: function () {
+            console.log('Accessing public function');
+            privateFunction();  // 可以訪問私有函數
+        }
+    };
+})();
+
+// 使用模組
+console.log(myIIFEModule.publicVariable);  // "This is a public variable"
+myIIFEModule.publicFunction();             // "Accessing public function"
+                                        // "This is a private variable"
+
+// 無法直接訪問私有變數和函數
+console.log(myIIFEModule.privateVariable);  // undefined
+myIIFEModule.privateFunction();             // TypeError: myIIFEModule.privateFunction is not a function
+----
+透過 return 語句，公開了模組的一部分功能，即 publicVariable 和 publicFunction，這些成員可以被外部訪問。
+
+.提高程式碼執行效率
+
+IIFE 可以在定義時立即執行，避免了函式的不必要的存儲和調用，提高了程式碼的執行效率。
+
+== IIFE的缺點
+.程式碼不易維護
+當程式碼變得更加複雜時，IIFE 的程式碼容易變得龐大，不易於維護和閱讀
+
+.不利於重複使用
+IIFE 的程式碼通常是一次性的，無法復用，因此在需要多次調用時不太方便。
+
+.增加程式碼複雜度：
+使用 IIFE 可能會使程式碼變得更加複雜，特別是當程式碼量很大時。
+
+== 範例題型
+[source, javascript]
+----
+{
+    for (var i = 0; i < 3; i++) {
+            setTimeout(function() {
+                console.log(j);  // 輸出 3, 3, 3
+            }, 1000);
+    }
+}
+----
+var 聲明的變量是函式作用域，因此，在循環結束後，i 的值為 3，每個 setTimeout 回調函式引用的都是同一個 i 變量，因此輸出的結果都是 3。
+
+解法:IIFE 可以幫助避免這些問題。
+[source, javascript]
+----
+{
+    for (var i = 0; i < 3; i++) {
+        (function(j) {
+            setTimeout(function() {
+                console.log(j);  // 輸出 0, 1, 2
+            }, 1000);
+        })(i);
+    }
+}
+----
+這裡每次迴圈都立即執行 IIFE，將當前的 i 值作為參數傳遞，避免了變數提升導致的問題。如果不使用 IIFE，所有的定時器都會在 1 秒後輸出相同的 i 值（最終值 3）。
