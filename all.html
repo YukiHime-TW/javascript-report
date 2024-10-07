@@ -572,9 +572,9 @@ console.log(result); // 輸出Anonymous</code></pre>
 username ??= "Guest";
 console.log(username); // 輸出 Guest
 
-let age = 0;
-age ??= 18;
-console.log(age); // 輸出 0</code></pre>
+let userAge = 0;
+userAge ??= 18;
+console.log(userAge); // 輸出 0</code></pre>
 </div>
 </div>
 </div>
@@ -927,7 +927,7 @@ try {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>class ApplicationError extends Error { // 通用的應用程式錯誤類別
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">class ApplicationError extends Error { // 通用的應用程式錯誤類別
     constructor(message) {
         super(message);
         this.name = 'ApplicationError';
@@ -957,7 +957,7 @@ class FileReadError extends ApplicationError { // 檔案文件讀取錯誤
         this.name = 'FileReadError';
         this.fileName = fileName; // 保存出錯的文件名
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -2412,7 +2412,7 @@ async function inner() {
     }
 
 }
-inner();</code></pre>
+inner(); //我抓到的錯誤 Error: 這是非同步中的錯誤</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2435,11 +2435,8 @@ async function inner() {
     }
 
 }
-inner();</code></pre>
+inner(); //這是callback中的錯誤</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()</p>
 </div>
 </div>
 </div>
@@ -3299,7 +3296,7 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">建構子</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">在構造函數中，<code>this</code> 指向新建立的實體。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">在建構函數中，<code>this</code> 指向新建立的實體。</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">事件處理器</p></td>
@@ -3332,7 +3329,7 @@ call() 和 apply() 立即調用函數並指定 this 的值。</p></td>
 <pre class="highlight"><code class="language-javascript" data-lang="javascript"> function run() {
     console.log(this === window);
 }
-run();</code></pre>
+run(); //true</code></pre>
 </div>
 </div>
 </div>
@@ -3582,7 +3579,7 @@ myIIFEModule.privateFunction();             // TypeError: myIIFEModule.privateFu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">function fn1() {
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function fn1() {
   console.log(a);
 }
 function fn2() {
@@ -3593,14 +3590,17 @@ fn2(); // ReferenceError: a is not defined</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>在這個例子中，<code>fn1</code> 和 <code>fn2</code> 的作用域是獨立的，因此 <code>fn1</code> 無法訪問到 <code>fn2</code> 中的變數 <code>a</code>。</p>
+<p>在這個例子中，<code>fn1</code> 和 <code>fn2</code> 的作用域是獨立的，因此 <code>fn1</code> 無法訪問到 <code>fn2</code> 中的變數 <code>a</code>。這是因為 JavaScript 的作用域是靜態的，也就是在撰寫程式碼時就決定的，而不是在執行時依據呼叫位置決定。</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_什麼是閉包">什麼是閉包？</h4>
 <div class="paragraph">
-<p>但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：</p>
+<p>如果有一個內層函式可以取用外層函式的變數，那就形成了閉包。例如：</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">function sayHi() {
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function sayHi() {
   var name = '小明';
 
   function addString() {
@@ -3612,7 +3612,22 @@ sayHi(); // "小明 你好"</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>在這裡，<code>addString</code> 可以取用 <code>sayHi</code> 中的變數 <code>name</code>，這就形成了閉包。閉包讓內部函式能保留並使用外部函式的變數。</p>
+<p>在這裡，<code>addString</code> 可以取用 <code>sayHi</code> 中的變數 <code>name</code>，這就形成了閉包。閉包讓內部函式能保留並使用外部函式的變數，就算外層函式執行結束也是一樣。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_作用域鏈與閉包">作用域鏈與閉包</h4>
+<div class="paragraph">
+<p>閉包的運作依賴於作用域鏈。當內部函式被執行時，它會先查找自己作用域內的變數，如果找不到，才會依序向外查找上層的作用域，直到全域作用域為止。</p>
+</div>
+<div class="paragraph">
+<p>在上面的例子中，addString 可以透過作用域鏈找到 <code>sayHi</code> 中的變數 <code>name</code> 變數，這就是閉包保留外層變數的方式。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_自由變數">自由變數</h4>
+<div class="paragraph">
+<p>閉包中的一個重要概念是<strong>自由變數</strong>。所謂自由變數，就是指內層函式中使用但未在其自身作用域內定義的變數。例如在 addString 中，變數 <code>name</code> 就是自由變數，因為它是在外層函式 <code>sayHi</code> 中定義的。</p>
 </div>
 </div>
 <div class="sect3">
@@ -3623,7 +3638,7 @@ sayHi(); // "小明 你好"</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">function createCounter() {
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function createCounter() {
   var count = 0;
   return function () {
     count++;
@@ -3637,7 +3652,7 @@ counter(); // 2</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>在這裡，<code>count</code> 是 <code>createCounter</code> 的私有變數，只有返回的內部函式可以訪問它。確保 <code>count</code> 的值不會被外部程式碼隨意修改。</p>
+<p>在這裡，<code>count</code> 是 <code>createCounter</code> 的私有變數，只有返回的內部函式可以訪問它。這樣可以確保 <code>count</code> 的值不會被外部程式碼隨意修改。</p>
 </div>
 </div>
 <div class="sect3">
@@ -3647,7 +3662,7 @@ counter(); // 2</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">const counter1 = createCounter();
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">const counter1 = createCounter();
 const counter2 = createCounter();
 
 counter1(); // 1
@@ -3667,7 +3682,7 @@ counter2(); // 1</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">function once(fn) {
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function once(fn) {
   let executed = false;
   return function (...args) {
     if (!executed) {
@@ -3704,17 +3719,250 @@ initialize(); // 不會再次執行</code></pre>
 </li>
 </ul>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_總結_4">總結</h4>
 <div class="paragraph">
-<p>閉包在實際開發中也能提高程式的模組化和安全性，因此深入理解閉包對於 JavaScript 開發者來說是非常重要的。</p>
+<p>閉包在 JavaScript 中是一個非常強大的工具，可以用來創建私有變數、保持狀態、甚至實現一些進階的控制結構。透過閉包，我們可以寫出更加模組化、安全且可維護的程式碼。</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_高階函式_higher_order_function">高階函式 (Higher-Order Function)</h3>
+<div class="paragraph">
+<p>高階函式定義上是指一個function可以做為參數傳遞，或是將函式作為返回值的函式，都可以稱做為高階函數</p>
+</div>
+<div class="sect3">
+<h4 id="_簡單範例_6">簡單範例</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>接受函式當作參數</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+function processUserInputHOF(callback) {
+    const name = "Alice";
+    return callback(name);
+}
+
+console.log(processUserInputHOF(greet)); // Hello, Alice!</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在上述範例中processUserInputHOF接收了greet函式做為參數使用，所以processUserInputHOF是一個高階函式</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>將函式作為返回值</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function multiplyByHOF(factor) {
+    return function(numberHOF) {
+        return numberHOF * factor;
+    };
+}
+
+const multiplyByTwo = multiplyByHOF(2); //multiplyByHOF返回一個function
+console.log(multiplyByTwo(5)); // 計算結果為10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在上述範例中multiplyByHOF會返回一個function，所以multiplyByHOF是一個高階函式，此時multiplyByTwo就會變成一個function並傳遞參數給numberHOF</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_javascript自帶常用的高階函式">javaScript自帶常用的高階函式</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>map(): 會將數組進行疊代並將內容當作參數給函式使用，並返回一個新的數組</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">const numbers = [1, 2, 3];
+const doubled = numbers.map(function(num){
+    return num * 2;
+});
+console.log(doubled); // [2, 4, 6]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>上述範例中map接收了一個function，所以map()是高階函式，並且對數組的內容進行處理</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>filter(): 會根據給定的條件判斷將數組的內容進行過濾，並將過濾後的數組返回</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(function(num){
+    return num % 2 === 0
+});
+console.log(evenNumbers); // [2, 4]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>在上述範例filter()也是接收function做為參數，因此它也是個高階函數</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>可以使用箭頭函式(Arrow Function)的方法讓程式碼更簡潔</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>const numbers = [1, 2, 3];
+const doubled = numbers.map(num =&gt; num * 2)
+console.log(doubled); // [2, 4, 6]
+
+const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(num =&gt; num % 2 === 0)
+console.log(evenNumbers); // [2, 4]</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_分工表格">分工表格</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">題目</th>
+<th class="tableblock halign-left valign-top">編輯</th>
+<th class="tableblock halign-left valign-top">報告</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ternary Operator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nullish Coalescing Operator/Assignment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Falsy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Error</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">var/let/const 差異</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hoisting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Temporal Dead Zone, TDZ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">同步/非同步差異</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XMLHttpRequest/fetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16&amp;1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AJAX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Promise</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">async/await</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">try…​catch 與非同步</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Immediately Invoked Function Expression, IIFE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">高階函式 Higher-Order Function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">閉包 Closure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">this</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arrow Function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">整理adoc文件</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-07 18:07:18 +0800
+Last updated 2024-10-07 22:37:00 +0800
 </div>
 </div>
 </body>
