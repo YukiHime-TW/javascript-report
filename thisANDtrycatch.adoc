@@ -245,4 +245,4 @@ inner();
 
 ----
 
-* 如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
+* 如果要寫Promise的話，因為不是由try catch語法，而是只能用reject和catch()
