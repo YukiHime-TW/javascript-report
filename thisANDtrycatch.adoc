@@ -89,6 +89,7 @@ console.log(person1.name); // 輸出 "Bob"
 
 == 箭頭函數
 
+=== 函數域
 ----
 
 const objarr = {
@@ -104,25 +105,68 @@ const objarr = {
 objarr.greet(); // 輸出 "Hello, Eva"
 
 ----
+=== 物件
+
+----
+
+let objsArrTest = {
+    name: String,
+    fun: () => {
+        console.log(this)
+    }
+}
+objsArrTest.fun();
+
+----
+
+
 
 == bind()、call() 和 apply()
 
-----
-const bindobj = { name: 'Charlie' };
-function sayHi() {
-    console.log('Hi, ' + this.name);
-}
+* 返回一個新的函示，並且此函數的this會與物件綁定
 
-const boundSayHi = sayHi.bind(bindobj);
-boundSayHi(); // 輸出 "Hi, Charlie"
+=== bind
+
+----
 
 function greet() {
-    console.log('Hello, ' + this.name);
+    console.log(`Hello, ${this.name}`);
 }
 
-const user = { name: 'Diana' };
-greet.call(user); // 輸出 "Hello, Diana"
-greet.apply(user); // 輸出 "Hello, Diana"
+const obj = { name: 'Charlie' };
+const greetCharlie = greet.bind(obj);
+greetCharlie(); // 輸出：Hello, Charlie
+
+----
+
+=== call
+
+* func.call(thisArg, arg1, arg2, ...)，馬上執行且第一個參數會被綁定為this
+
+
+----
+
+function greet() {
+    console.log(`Hello, ${this.name}`);
+}
+
+const obj = { name: 'Alice' };
+greet.call(obj); // 輸出：Hello, Alice
+
+----
+
+=== apply
+
+* * func.call(thisArg, [argsArray])，跟call只差在傳入參數用陣列
+
+----
+
+function greet(greeting,name) {
+    console.log(`${greeting},${name} ${this.name}`);
+}
+
+const obj = { name: 'Bob' };
+greet.apply(obj, ['Hi','myname:']); // 輸出：Hi, Bob
 
 ----
 
@@ -142,6 +186,21 @@ try{
 //一定會執行的區塊
 }
 ----
+
+== 例子
+
+----
+
+try{
+throw 'hi'
+}catch(e){ 
+ console.log(e);
+}finally{
+console.log('fin');
+}
+
+----
+
 == **try catch 與非同步**
 
 try catch 可以處理同步的程式碼，以下有數種可以處理非同步程式的錯誤的方式
@@ -186,5 +245,4 @@ inner();
 
 ----
 
-如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
-
+* 如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
