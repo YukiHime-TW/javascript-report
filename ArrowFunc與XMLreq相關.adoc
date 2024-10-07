@@ -129,9 +129,11 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 
 XMLHttpRequest（簡稱 XHR）是一種在網頁中與伺服器進行資料交換的 API，允許在不重新載入整個頁面的情況下，動態地更新部分網頁內容。這使得網頁應用程式在更新部分資料時不會去中斷使用者當下的操作。
 
-此項技術在所謂的「AJAX」（Asynchronous JavaScript and XML）功能應用中被大量使用。
+* 特色
 
-雖然 XMLHttpRequest 這個物件的命名包含了 XML 與 HTTP 等字眼，但實際上 XMLHttpRequest 可用來接收任何類型的資料，不限於 XML 類型。
+** 此項技術在所謂的「AJAX」（Asynchronous JavaScript and XML）功能應用中被大量使用。
+
+** XMLHttpRequest 可用來接收任何類型的資料，不限於 XML 類型。
 
 * 實作XMLHttpRequest
 
@@ -220,7 +222,7 @@ fetch(request) //只有url就會預設這個請求的HTTP請求方法是GET。
   });
 ----
 
-Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理異步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致中斷Request的狀況下出現rejected狀態。這也就是說，只要伺服器回傳，它的回傳就都會是fulfilled狀態。
+Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理異步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致Request中斷的狀況下才會出現rejected狀態。這也就是說，只要伺服器有回傳，它的回傳就都會是fulfilled狀態。
 
 
 
