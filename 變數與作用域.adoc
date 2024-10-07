@@ -4,7 +4,7 @@
 stanleydk4
 
 == var / let / const 差異
-在JavaScript，有三種變數宣告的方式: var, let, const，其中 ES6 後新增了let, const，他們與原先的var最主要的差別在於:
+在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
 
 .區塊作用域 (Block-Level Scope)
 - let
@@ -21,7 +21,7 @@ stanleydk4
 ----
 {
     let dessert1 = "cookie";
-    dessert = "cake";
+    dessert1 = "cake";
     console.log(dessert1);
     
     const dessert2 = "cookie";
@@ -32,8 +32,8 @@ stanleydk4
 [source, javascript]
 ----
 {
-    const dessert2; //SyntaxError
-    dessert2 = "cake";  
+    const dessert8; //SyntaxError
+    dessert8 = "cake";  
     console.log(dessert2);
 }
 ----
@@ -43,7 +43,7 @@ stanleydk4
 ----
 {
     const cake = {
-        fruit: "apple";
+        fruit: "apple"
     }
     cake.fruit = "chrerry";
     console.log(cake.fruit);
@@ -61,10 +61,10 @@ stanleydk4
 [source, javascript]
 ----
 {
-    let dessert = "cookie";
-    console.log(dessert);
+    let dessert3 = "cookie";
+    console.log(dessert3);
 }
-console.log(dessert); //ReferenceError: dessert is not defined
+console.log(dessert3); //ReferenceError: dessert is not defined
 ----
 可以看出let的作用域(Scope) 僅限於大括號內(block)，同理if、for迴圈、while迴圈也適用
 [source, javascript]
@@ -82,10 +82,10 @@ var不同於前者，他的Scope並不僅只限於Block內
 [source, javascript]
 ----
 {
-    var dessert1 = "cake";
-    console.log(dessert1);
+    var dessert4 = "cake";
+    console.log(dessert4);
 }
-console.log(dessert1);
+console.log(dessert4);
 ----
 [source, javascript]
 ----
@@ -97,30 +97,30 @@ console.log(varLoop);
 難道用var宣告就只能是全域變數嗎? 不不不，想讓他變成區域變數只需要包在函式(function)裡面即可:
 [source, javascript]
 ----
-function printDessert() {
-  var myDessert = "Pie";
-  console.log(myDessert);
+function printDessert5() {
+  var myDessert5 = "Pie";
+  console.log(myDessert5);
 }
-printDessert(); 
-console.log(myDessert); // ReferenceError: myDessert is not defined
+printDessert5(); 
+console.log(myDessert5); // ReferenceError: myDessert is not defined
 ----
 === var 的宣告使用
 相較於let/const，var存在一個允許重複宣告的特性:
 [source, javascript]
 ----
 {
-    var dessert2 = "cookie";
-    var dessert2 = "candy";
-    console.log(dessert2);
+    var dessert6 = "cookie";
+    var dessert6 = "candy";
+    console.log(dessert6);
 }
 ----
 但 let / const 無法重複宣告:
 [source, javascript]
 ----
 {
-    let dessert2 = "cookie";
-    let dessert2 = "candy"; //SyntaxError: Identifier 'dessert2' has already been declared
-    console.log(dessert2);
+    let dessert7 = "cookie";
+    let dessert7 = "candy"; //SyntaxError: Identifier 'dessert7' has already been declared
+    console.log(dessert7);
 }
 ----
 
@@ -143,17 +143,17 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 [source, javascript]
 ----
 {
-    function printDessert() {
-        myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert2() {
+        myDessert2 = "Pie";
+        console.log(myDessert2);
         
         while(false){
             console.log("這裡不會被執行");
-            var mydessert;
+            var mydessert2;
         }
     }
     
-    printDessert();
+    printDessert2();
 }
 ----
 上面例子之所以能正常運行，是因為對於JavaScript，無論你在函數中的哪一行用 var 宣告變數，一律視為在函數的第一行宣告，這也是為什麼第二例子的宣告還是合法的，而此正是hoisting(抬升)
@@ -162,13 +162,13 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 [source, javascript]
 ----
 {
-    function printDessert() {
-        console.log(myDessert); //undefined
-        var myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert3() {
+        console.log(myDessert3); //undefined
+        var myDessert3 = "Pie";
+        console.log(myDessert3);
     }
     
-    printDessert();
+    printDessert3();
 }
 ----
 由上述可以看到，被hoisting上去的其實只有" var myDessert; "，賦值(把值指派給變數) 的動作不會 hoisting。
@@ -178,11 +178,11 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 [source, javascript]
 ----
 {
-    printDessert();
+    printDessert4();
     
-    function printDessert() {
-        var myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert4() {
+        var myDessert4 = "Pie";
+        console.log(myDessert4);
     }
     
 }
@@ -217,9 +217,9 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 [source, javascript]
 ----
 {
-    console.log(myDessert3); // undefined
-    var myDessert3 = "muffin";
-    console.log(myDessert3); // muffin
+    console.log(myDessert5); // undefined
+    var myDessert5 = "muffin";
+    console.log(myDessert5); // muffin
 }
 ----
 === TDZ的行為
@@ -228,9 +228,9 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 [source, javascript]
 ----
 {
-    console.log(myDessert); //ReferenceError: myDessert is not defined
+    console.log(myDessert6); //ReferenceError: myDessert6 is not defined
         
-    let mydessert = "pie";
+    let mydessert6 = "pie";
     
 }
 ----
@@ -239,12 +239,12 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 {
     if(true){
         //TDZ 起始點
-        console.log(myDessert);
-        let myDessert;
+        console.log(myDessert7);
+        let myDessert7;
         //TDZ 結束
-        myDessert = "pie";
+        myDessert7 = "pie";
         
-        console.log(myDessert);
+        console.log(myDessert7);
     
 }
 ----
