@@ -1972,7 +1972,7 @@ console.log(this === window)  //true
  function run() {
     console.log(this === window);
 }
-run();
+run(); //true
 
 ----
 
