@@ -349,214 +349,194 @@ try {
 }
 ----
 
-== 變數與作用域
+= 變數與作用域
 
-=== var/let/const 差異
-
-在JavaScript，有三種變數宣告的方式: var, let, const，其中 ES6 後新增了let, const，他們與原先的var最主要的差別在於:
+== var / let / const 差異
+在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
 
 .區塊作用域 (Block-Level Scope)
 - let
+
 - const
 
 .函式作用域 (Function-Level Scope)
 - var
 
-==== let / const 的宣告使用
-簡單說，let用於宣告變數，const用於宣告常數
 
+=== let / const 的宣告使用
+簡單說，let用於宣告變數，const用於宣告常數
 [source, javascript]
 ----
 {
     let dessert1 = "cookie";
-    dessert = "cake";
-    console.log(dessert1);
+    dessert1 = "cake";
+    console.log(dessert1); // cake
     
     const dessert2 = "cookie";
     dessert2 = "cake"; //TypeError: Assignment to constant variable. 
     console.log(dessert2);
 }
 ----
-
 [source, javascript]
 ----
 {
-    const dessert2; //SyntaxError
-    dessert2 = "cake";  
-    console.log(dessert2);
+    const dessert8; //SyntaxError
+    dessert8 = "cake";  
+    console.log(dessert8);
 }
 ----
 
 由以上範例可知，由let宣告的變數值是可以改變的，而由const宣告的常數則反之，且需要在宣告初始就賦值。但其實const還是有例外:
-
 [source, javascript]
 ----
 {
     const cake = {
-        fruit: "apple";
+        fruit: "apple"
     }
-    cake.fruit = "chrerry";
-    console.log(cake.fruit);
+    cake.fruit = "cherry";
+    console.log(cake.fruit); // cherry
 }
 ----
-
 咦? 為什麼使用物件與array，值就可以改?
 
 其實變數底層的運作的方式，不可改的是變數儲存的記憶體位置，改陣列與物件的內容卻是可以的。
 
-==== 區塊作用域 (Block-Level Scope)
+ 
+=== 區塊作用域 (Block-Level Scope)
+
 
 下面讓我們看看block的特性:
-
 [source, javascript]
 ----
 {
-    let dessert = "cookie";
-    console.log(dessert);
+    let dessert3 = "cookie";
+    console.log(dessert3); // cookie
 }
-console.log(dessert); //ReferenceError: dessert is not defined
+console.log(dessert3); //ReferenceError: dessert3 is not defined
 ----
-
 可以看出let的作用域(Scope) 僅限於大括號內(block)，同理if、for迴圈、while迴圈也適用
-
 [source, javascript]
 ----
 for(let i=1 ; i<=5 ; i++){
-    console.log(i);
+    console.log(i); // 1 2 3 4 5
 }
 console.log(i); //ReferenceError: i is not defined
 ----
 
-==== 函式作用域 (Function-Level Scope)
+'''
 
+=== 函式作用域 (Function-Level Scope)
 var不同於前者，他的Scope並不僅只限於Block內
-
 [source, javascript]
 ----
 {
-    var dessert1 = "cake";
-    console.log(dessert1);
+    var dessert4 = "cake";
+    console.log(dessert4); // cake
 }
-console.log(dessert1);
+console.log(dessert4); // cake
 ----
-
 [source, javascript]
 ----
 for(var varLoop=1 ; varLoop <= 5 ; varLoop++){
-    console.log(varLoop);
+    console.log(varLoop); // 1 2 3 4 5
 }
-console.log(varLoop);
+console.log(varLoop); // 6
 ----
-
 難道用var宣告就只能是全域變數嗎? 不不不，想讓他變成區域變數只需要包在函式(function)裡面即可:
-
 [source, javascript]
 ----
-function printDessert() {
-  var myDessert = "Pie";
-  console.log(myDessert);
+function printDessert5() {
+  var myDessert5 = "Pie";
+  console.log(myDessert5); // Pie
 }
-printDessert(); 
-console.log(myDessert); // ReferenceError: myDessert is not defined
+printDessert5(); 
+console.log(myDessert5); // ReferenceError: myDessert5 is not defined
 ----
-
-==== var 的宣告使用
+=== var 的宣告使用
 相較於let/const，var存在一個允許重複宣告的特性:
-
 [source, javascript]
 ----
 {
-    var dessert2 = "cookie";
-    var dessert2 = "candy";
-    console.log(dessert2);
+    var dessert6 = "cookie";
+    var dessert6 = "candy";
+    console.log(dessert6); // candy
 }
 ----
-
 但 let / const 無法重複宣告:
-
 [source, javascript]
 ----
 {
-    let dessert2 = "cookie";
-    let dessert2 = "candy"; //SyntaxError: Identifier 'dessert2' has already been declared
-    console.log(dessert2);
+    let dessert7 = "cookie";
+    let dessert7 = "candy"; //SyntaxError: Identifier 'dessert7' has already been declared
+    console.log(dessert7);
 }
 ----
 
-=== Hoisting
-
+== Hoisting
 較直觀的宣告邏輯大概都是先宣告才能使用，但因為Hoisting的特性卻能先使用再宣告
-
 [source, javascript]
 ----
 {
     function printDessert() {
         myDessert = "Pie";
-        console.log(myDessert);
+        console.log(myDessert); // Pie
         
-        var mydessert;
+        var myDessert;
     }
     
     printDessert();
 }
 ----
-
 甚至將宣告放在程式不會被執行的地方也可以:
-
 [source, javascript]
 ----
 {
-    function printDessert() {
-        myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert2() {
+        myDessert2 = "Pie";
+        console.log(myDessert2); // Pie
         
         while(false){
             console.log("這裡不會被執行");
-            var mydessert;
+            var myDessert2; // 在這裡宣告也可以
         }
     }
     
-    printDessert();
+    printDessert2(); // Pie
 }
 ----
-
 上面例子之所以能正常運行，是因為對於JavaScript，無論你在函數中的哪一行用 var 宣告變數，一律視為在函數的第一行宣告，這也是為什麼第二例子的宣告還是合法的，而此正是hoisting(抬升)
 
 那再看看下面的例子:
 [source, javascript]
 ----
 {
-    function printDessert() {
-        console.log(myDessert); //undefined
-        var myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert3() {
+        console.log(myDessert3); // undefined
+        var myDessert3 = "Pie";
+        console.log(myDessert3); // Pie
     }
     
-    printDessert();
+    printDessert3();
 }
 ----
-
 由上述可以看到，被hoisting上去的其實只有" var myDessert; "，賦值(把值指派給變數) 的動作不會 hoisting。
 
-==== 函式的Hoisting
-
+=== 函式的Hoisting
 其實函式也是能Hoisting的(先使用再宣告):
 [source, javascript]
 ----
 {
-    printDessert();
+    printDessert4();
     
-    function printDessert() {
-        var myDessert = "Pie";
-        console.log(myDessert);
+    function printDessert4() {
+        var myDessert4 = "Pie";
+        console.log(myDessert4); // Pie
     }
     
 }
 ----
-
 看來對於JavaScript，函式的宣告也都會先被提升到最前面
 再來看看一個有趣的例子:
-
 [source, javascript]
 ----
 {
@@ -570,66 +550,60 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
       return isEven(n - 1);
     }
 
-    console.log(isEven(4));
+    console.log(isEven(4)); //true
 
 
 }
 ----
-
 這個特性可以解決一個問題，也就是兩個函數需要互相呼叫彼此的狀態，也就是 A() 裡面會呼叫到 B()，而 B() 裡面會呼叫的 A() 的遞迴狀況(Cycling Recursion)。
 
-=== Temporal Dead Zone, TDZ
+== Temporal Dead Zone, TDZ
+在JavaScript中，當我們使用 let 或 const 宣告某個變數或常數時，在該變數或常數還沒有被賦予值之前會產生一段它們不能被使用的狀況，這段時間就是所謂的 *暫時性死區* (Temporal Dead Zone)的情況。
 
-在JavaScript中，當我們使用 let 或 const 宣告某個變數或常數時，在該變數或常數還沒有被賦予值之前會產生一段它們不能被使用的狀況，這段時間就是所謂的暫時性死區(Temporal Dead Zone)的情況。
-
-==== 為什麼有TDZ
+=== 為什麼有TDZ
 在 ES6 中引入了 let 和 const，它們不同於 var，因為 var 變數會被提升，但它們的值會在定義之前就可以被訪問，而這通常會導致不可預測的錯誤。為了解決這個問題，JavaScript 引入了 TDZ 概念來限制 let 和 const 變數在初始化之前的使用，從而提高代碼的安全性和可讀性。
-
 [source, javascript]
 ----
 {
-    console.log(myDessert3); // undefined
-    var myDessert3 = "muffin";
-    console.log(myDessert3); // muffin
+    console.log(myDessert5); // undefined
+    var myDessert5 = "muffin";
+    console.log(myDessert5); // muffin
 }
 ----
-
-==== TDZ的行為
+=== TDZ的行為
 當一個變數使用 let 或 const 宣告時，它在作用域的最頂部被"標記"為已存在，但不會被初始化。只有當執行到宣告語句時，變數才會被初始化。在變數初始化之前，它位於 TDZ 中，不能被訪問。
 
 [source, javascript]
 ----
 {
-    console.log(myDessert); //ReferenceError: myDessert is not defined
+    //let myDessert6; // 實際這行會被Hoist上來
+    console.log(myDessert6); //ReferenceError: myDessert6 is not defined
         
-    let mydessert = "pie";
+    let myDessert6 = "pie";
     
 }
 ----
-
 [source, javascript]
 ----
 {
     if(true){
-        //TDZ 起始點
-        console.log(myDessert);
-        let myDessert;
-        //TDZ 結束
-        myDessert = "pie";
+        //TDZ 起始點(top of block)
+        console.log(myDessert7); ////ReferenceError: myDessert7 is not defined
+        let myDessert7;
+        //TDZ 結束(賦值之前)
+        myDessert7 = "pie";
         
-        console.log(myDessert);
+        console.log(myDessert7); // pie
     
-    }
 }
 ----
-
-==== TDZ小結
+=== TDZ小結
 - TDZ 是指在變數被宣告和初始化之間的時間段，這段時間內變數不可訪問。
 - TDZ 只與 let 和 const 宣告相關。
 - 在 TDZ 期間訪問變數會拋出 ReferenceError 錯誤。
 - var 不受 TDZ 限制，因為它會被提升並初始化為 undefined。
 
-==== 總結
+== 總結
 
 [cols="1,1,1,1", options="header"]
 |===
