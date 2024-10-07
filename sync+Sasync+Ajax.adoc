@@ -56,9 +56,49 @@ link:https://html.spec.whatwg.org/multipage/images.html#attributes-common-to-sou
 
 image::images//img3.png[同步]
 
+* 上面會發生：
+
+1. 呼叫 `printSquare(4)`
+   - `printSquare` 函數被加入 `Call Stack`。
+
+2. `printSquare` 內部呼叫 `square(n)`
+   - `square` 函數也被加入 `Call Stack`。
+
+3. `square(n)` 內部呼叫 `multiply(n, n)`
+   - `multiply` 函數被加入 `Call Stack`。
+
+4. `multiply(n, n)` 計算完成並 `return`
+   - `multiply` 從 `Call Stack` 中移除。
+
+5. `square(n)` 執行完畢並 `return`
+   - `square` 從 `Call Stack` 中移除。
+
+6. 回到 `printSquare` 函數，`printSquare` 執行完成後
+   - `printSquare` 從 `Call Stack` 中移除。
+
 * 當執行 setTimeout() 函式時，setTimeout 會短暫進入 Call Stack 設定計時器，並將 callback 函式交給 Web API 進行計時。等計時時間到後，callback 函式會進入 Queue 排隊，當 Stack 內同步操作都完成且為空時，Event Loop 會將它取出來執行。
 
 image::images//img4.png[非同步]
+
+* 上面會發生:
+1. 印出 `hi`
+   - `console.log('hi')` 被加入 `Call Stack`，並立即執行。
+
+2. 遇到 `setTimeout()` 函式
+   - `setTimeout()` 進入 `Call Stack`，並設定計時器。
+   - 計時器被丟到瀏覽器的 `Web API`，開始計時。
+
+3. `setTimeout()` 完成設定
+   - `setTimeout()` 從 `Call Stack` 中移除。
+
+4. 繼續執行同步代碼
+   - 印出 `World`，`console.log('World')` 被加入 `Call Stack`，並立即執行後移除。
+
+5. 計時器完成計時後
+   - `setTimeout()` 的 `callback` 函式被放入 `Queue` 等待。
+
+6. `Call Stack` 清空後
+   - `Event Loop` 檢查 `Queue`，將 `callback` 推入 `Call Stack` 中執行。
 
 === Queue 又細分為 Microtask（微任務）、Macrotask（宏任務）
 
@@ -75,8 +115,7 @@ image::images//img4.png[非同步]
 
 image::images//queue.gif[流程]
 
-* 每次 Macrotask 後還會檢查 Microtask
-* link:example/ex2.html[Macrotask 還會檢查 Microtask]
+* 每次 Macrotask任務後還會檢查是否有Microtask任務
 
 [source,javascript]
 ----
@@ -141,6 +180,8 @@ Macrotask - setTimeout 2
 * Ajax 是 Asynchronous JavaScript and XML 的縮寫，並不是單一的技術，而是一套綜合性的瀏覽器端網頁開發技術。
 * 是因為 Google 在 2005 年推出 Gmail 服務時採用此技術而知名。
 
+image::images/img5.png[Ajax]
+
 === Ajax 提升使用者體驗
 1. 網站性能優化：使用 Ajax 實現動態載入
     * 傳統的網站在瀏覽不同頁面時，每次都需要向伺服器發送請求並等待回應，瀏覽器還需要重新渲染整個頁面。但使用 Ajax，可以只更新頁面上的某些部分，而不是整個頁面。
@@ -189,6 +230,7 @@ Macrotask - setTimeout 2
 
 * **XMLHttpRequest**：
   * 需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
+
   
   [source, javascript]
   ----
@@ -196,9 +238,9 @@ Macrotask - setTimeout 2
   xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
   xhr.onload = function() {
       if (xhr.status === 200) {
-          console.log(JSON.parse(xhr.responseText));
+          console.log(JSON.parse(xhr.responseText)); // 請求成功，解析並顯示資料
       } else {
-          console.error('Request failed.');
+          console.error('Request failed.'); // 請求失敗
       }
   };
   xhr.send();
@@ -210,9 +252,9 @@ Macrotask - setTimeout 2
   [source, javascript]
   ----
   fetch('https://jsonplaceholder.typicode.com/posts/1')
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
+      .then(response => response.json()) // 解析為 JSON 格式
+      .then(data => console.log(data)) // 成功時顯示資料
+      .catch(error => console.error('Error:', error)); // 處理錯誤
   ----
 
 ==== 工具與框架
@@ -223,8 +265,8 @@ Macrotask - setTimeout 2
   [source, javascript]
   ----
   axios.get('https://jsonplaceholder.typicode.com/posts/1')
-      .then(response => console.log(response.data))
-      .catch(error => console.error('Error:', error));
+      .then(response => console.log(response.data)) // 直接取出資料
+      .catch(error => console.error('Error:', error)); // 處理錯誤
   ----
 
 * **jQuery 的 $.ajax()**：
