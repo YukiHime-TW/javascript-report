@@ -1,0 +1,254 @@
+變數與作用域
+===================
+Author's Name
+stanleydk4
+
+== var / let / const 差異
+在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
+
+.區塊作用域 (Block-Level Scope)
+- let
+
+- const
+
+.函式作用域 (Function-Level Scope)
+- var
+
+
+=== let / const 的宣告使用
+簡單說，let用於宣告變數，const用於宣告常數
+[source, javascript]
+----
+{
+    let dessert1 = "cookie";
+    dessert = "cake";
+    console.log(dessert1);
+    
+    const dessert2 = "cookie";
+    dessert2 = "cake"; //TypeError: Assignment to constant variable. 
+    console.log(dessert2);
+}
+----
+[source, javascript]
+----
+{
+    const dessert2; //SyntaxError
+    dessert2 = "cake";  
+    console.log(dessert2);
+}
+----
+
+由以上範例可知，由let宣告的變數值是可以改變的，而由const宣告的常數則反之，且需要在宣告初始就賦值。但其實const還是有例外:
+[source, javascript]
+----
+{
+    const cake = {
+        fruit: "apple";
+    }
+    cake.fruit = "chrerry";
+    console.log(cake.fruit);
+}
+----
+咦? 為什麼使用物件與array，值就可以改?
+
+其實變數底層的運作的方式，不可改的是變數儲存的記憶體位置，改陣列與物件的內容卻是可以的。
+
+ 
+=== 區塊作用域 (Block-Level Scope)
+
+
+下面讓我們看看block的特性:
+[source, javascript]
+----
+{
+    let dessert = "cookie";
+    console.log(dessert);
+}
+console.log(dessert); //ReferenceError: dessert is not defined
+----
+可以看出let的作用域(Scope) 僅限於大括號內(block)，同理if、for迴圈、while迴圈也適用
+[source, javascript]
+----
+for(let i=1 ; i<=5 ; i++){
+    console.log(i);
+}
+console.log(i); //ReferenceError: i is not defined
+----
+
+'''
+
+=== 函式作用域 (Function-Level Scope)
+var不同於前者，他的Scope並不僅只限於Block內
+[source, javascript]
+----
+{
+    var dessert1 = "cake";
+    console.log(dessert1);
+}
+console.log(dessert1);
+----
+[source, javascript]
+----
+for(var varLoop=1 ; varLoop <= 5 ; varLoop++){
+    console.log(varLoop);
+}
+console.log(varLoop);
+----
+難道用var宣告就只能是全域變數嗎? 不不不，想讓他變成區域變數只需要包在函式(function)裡面即可:
+[source, javascript]
+----
+function printDessert() {
+  var myDessert = "Pie";
+  console.log(myDessert);
+}
+printDessert(); 
+console.log(myDessert); // ReferenceError: myDessert is not defined
+----
+=== var 的宣告使用
+相較於let/const，var存在一個允許重複宣告的特性:
+[source, javascript]
+----
+{
+    var dessert2 = "cookie";
+    var dessert2 = "candy";
+    console.log(dessert2);
+}
+----
+但 let / const 無法重複宣告:
+[source, javascript]
+----
+{
+    let dessert2 = "cookie";
+    let dessert2 = "candy"; //SyntaxError: Identifier 'dessert2' has already been declared
+    console.log(dessert2);
+}
+----
+
+== Hoisting
+較直觀的宣告邏輯大概都是先宣告才能使用，但因為Hoisting的特性卻能先使用再宣告
+[source, javascript]
+----
+{
+    function printDessert() {
+        myDessert = "Pie";
+        console.log(myDessert);
+        
+        var mydessert;
+    }
+    
+    printDessert();
+}
+----
+甚至將宣告放在程式不會被執行的地方也可以:
+[source, javascript]
+----
+{
+    function printDessert() {
+        myDessert = "Pie";
+        console.log(myDessert);
+        
+        while(false){
+            console.log("這裡不會被執行");
+            var mydessert;
+        }
+    }
+    
+    printDessert();
+}
+----
+上面例子之所以能正常運行，是因為對於JavaScript，無論你在函數中的哪一行用 var 宣告變數，一律視為在函數的第一行宣告，這也是為什麼第二例子的宣告還是合法的，而此正是hoisting(抬升)
+
+那再看看下面的例子:
+[source, javascript]
+----
+{
+    function printDessert() {
+        console.log(myDessert); //undefined
+        var myDessert = "Pie";
+        console.log(myDessert);
+    }
+    
+    printDessert();
+}
+----
+由上述可以看到，被hoisting上去的其實只有" var myDessert; "，賦值(把值指派給變數) 的動作不會 hoisting。
+
+=== 函式的Hoisting
+其實函式也是能Hoisting的(先使用再宣告):
+[source, javascript]
+----
+{
+    printDessert();
+    
+    function printDessert() {
+        var myDessert = "Pie";
+        console.log(myDessert);
+    }
+    
+}
+----
+看來對於JavaScript，函式的宣告也都會先被提升到最前面
+再來看看一個有趣的例子:
+[source, javascript]
+----
+{
+    function isEven(n) {
+      if (n === 0) return true;
+      return isOdd(n - 1);
+    }
+
+    function isOdd(n) {
+      if (n === 0) return false;
+      return isEven(n - 1);
+    }
+
+    console.log(isEven(4));
+
+
+}
+----
+這個特性可以解決一個問題，也就是兩個函數需要互相呼叫彼此的狀態，也就是 A() 裡面會呼叫到 B()，而 B() 裡面會呼叫的 A() 的遞迴狀況(Cycling Recursion)。
+
+== Temporal Dead Zone, TDZ
+在JavaScript中，當我們使用 let 或 const 宣告某個變數或常數時，在該變數或常數還沒有被賦予值之前會產生一段它們不能被使用的狀況，這段時間就是所謂的暫時性死區(Temporal Dead Zone)的情況。
+[source, javascript]
+----
+{
+    console.log(myDessert); //ReferenceError: myDessert is not defined
+        
+    let mydessert = "pie";
+    
+}
+----
+[source, javascript]
+----
+{
+    if(true){
+        //TDZ 起始點
+        console.log(myDessert);
+        let myDessert;
+        //TDZ 結束
+        myDessert = "pie";
+        
+        console.log(myDessert);
+    
+}
+----
+=== 總結
+var / let / const比較:
+[cols="3*", options="header"]
+|===
+|特性 |var |let/const
+
+|作用域
+|函式作用域
+|區塊作用域
+
+|宣告前存取
+|undefined
+|ReferenceError
+
+|重複宣告
+|可以重複宣告
+|不可以重複宣告
+|===
