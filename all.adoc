@@ -644,505 +644,6 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 | **初始值**                   | `undefined` （若沒有賦值）   | 不可使用未初始化的變數 (TDZ)     | 必須在宣告時賦值，否則報錯
 |===
 
-== 函式
-
-=== 立即調用函式 IIFE (Immediately Invoked Function Expression)
-JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
-
-IIFE格式長這樣：
-
-[source, javascript]
-----
-(function () {
-  // Code to be executed
-})();
-----
-在這種表達式中，函式定義與函式調用的括號是一起的，確保函式只會被執行一次，而不是定義後可以多次執行。在這個封閉的作用域中，變量和函式都不會污染全局環境。
-
-==== IIFE的優點
-
-.創建局部作用域
-
-通過使用 IIFE 可以創建一個局部作用域，避免全局變量的污染。以下程式碼可以看到，在 IIFE 中，有一個局部變量 localVariable。localVariable 只能在 IIFE 內訪問，不能在 IIFE 外訪問
-[source, javascript]
-----
-var globalVariable = "global variable";
-
-(function () {
-  var localVariable = "local variable";
-  console.log(localVariable); // local variable
-})();
-
-console.log(localVariable); // ReferenceError: localVariable is not defined
-console.log(globalVariable); // global variable
-----
-
-.避免命名衝突
-IIFE 可以為變量創建了一個單獨的命名空間，避免函式名和變量名的衝突。
-[source, javascript]
-----
-var testIIFE = "I'm a global variable";
-
-(function () {
-  var testIIFE = "I'm a local variable";
-  console.log(testIIFE); // local variable
-})();
-
-console.log(testIIFE); // global variable
-----
-
-.模組化編程
-關鍵概念是將一段代碼封裝在一個函數中，並立即執行這個函數。這樣可以將變數和函數限制在 IIFE 的作用域內，避免與外部代碼的命名衝突，並且可以選擇性地暴露特定功能給外界。
-[source, javascript]
-----
-// 定義一個 IIFE 模組
-const myIIFEModule = (function () {
-    // 私有變數和函數
-    let privateVariable = 'This is a private variable';
-
-    function privateFunction() {
-        console.log(privateVariable);
-    }
-
-    // 公開的 API
-    return {
-        publicVariable: 'This is a public variable',
-
-        publicFunction: function () {
-            console.log('Accessing public function');
-            privateFunction();  // 可以訪問私有函數
-        }
-    };
-})();
-
-// 使用模組
-console.log(myIIFEModule.publicVariable);  // "This is a public variable"
-myIIFEModule.publicFunction();             // "Accessing public function"
-                                        // "This is a private variable"
-
-// 無法直接訪問私有變數和函數
-console.log(myIIFEModule.privateVariable);  // undefined
-myIIFEModule.privateFunction();             // TypeError: myIIFEModule.privateFunction is not a function
-----
-透過 return 語句，公開了模組的一部分功能，即 publicVariable 和 publicFunction，這些成員可以被外部訪問。
-
-.提高程式碼執行效率
-
-IIFE 可以在定義時立即執行，避免了函式的不必要的存儲和調用，提高了程式碼的執行效率。
-
-==== IIFE的缺點
-.程式碼不易維護
-當程式碼變得更加複雜時，IIFE 的程式碼容易變得龐大，不易於維護和閱讀
-
-.不利於重複使用
-IIFE 的程式碼通常是一次性的，無法復用，因此在需要多次調用時不太方便。
-
-.增加程式碼複雜度：
-使用 IIFE 可能會使程式碼變得更加複雜，特別是當程式碼量很大時。
-
-==== 範例題型
-[source, javascript]
-----
-{
-    for (var i = 0; i < 3; i++) {
-            setTimeout(function() {
-                console.log(j);  // 輸出 3, 3, 3
-            }, 1000);
-    }
-}
-----
-var 聲明的變量是函式作用域，因此，在循環結束後，i 的值為 3，每個 setTimeout 回調函式引用的都是同一個 i 變量，因此輸出的結果都是 3。
-
-解法:IIFE 可以幫助避免這些問題。
-
-[source, javascript]
-----
-{
-    for (var i = 0; i < 3; i++) {
-        (function(j) {
-            setTimeout(function() {
-                console.log(j);  // 輸出 0, 1, 2
-            }, 1000);
-        })(i);
-    }
-}
-----
-
-這裡每次迴圈都立即執行 IIFE，將當前的 i 值作為參數傳遞，避免了變數提升導致的問題。如果不使用 IIFE，所有的定時器都會在 1 秒後輸出相同的 i 值（最終值 3）。
-=== 高階函式 Higher-Order Function
-
-=== 閉包 Closure
-閉包是 JavaScript 中非常重要的概念。透過理解靜態作用域和閉包，可以在開發中解決許多實際問題。
-
-==== 什麼是靜態作用域？
-
-**靜態作用域**（也稱為**詞法作用域**）是指 JavaScript 的作用域在程式碼撰寫時就已經確定，並且在執行過程中不會改變。例如：
-
-[source, js]
-----
-function fn1() {
-  console.log(a);
-}
-function fn2() {
-  var a = 1;
-  fn1();
-}
-fn2(); // ReferenceError: a is not defined
-----
-
-在這個例子中，`fn1` 和 `fn2` 的作用域是獨立的，因此 `fn1` 無法訪問到 `fn2` 中的變數 `a`。
-
-但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：
-
-[source, js]
-----
-function sayHi() {
-  var name = '小明';
-
-  function addString() {
-    console.log(`${name} 你好`);  // 取用外層的變數
-  }
-  addString();
-}
-sayHi(); // "小明 你好"
-----
-
-在這裡，`addString` 可以取用 `sayHi` 中的變數 `name`，這就形成了閉包。閉包讓內部函式能保留並使用外部函式的變數。
-
-==== 閉包的用途：創建私有變數
-
-閉包常用於**創建私有變數**，使得這些變數只能由特定函式訪問，這樣可以避免不必要的修改，增強資料的安全性。
-例如：
-
-[source, js]
-----
-function createCounter() {
-  var count = 0;
-  return function () {
-    count++;
-    console.log(count);
-  };
-}
-
-const counter = createCounter();
-counter(); // 1
-counter(); // 2
-----
-
-在這裡，`count` 是 `createCounter` 的私有變數，只有返回的內部函式可以訪問它。確保 `count` 的值不會被外部程式碼隨意修改。
-
-==== 閉包實際的應用
-
-透過閉包，可以創建多個相互獨立的計數器，每個計數器的變數互不干擾：
-
-[source, js]
-----
-const counter1 = createCounter();
-const counter2 = createCounter();
-
-counter1(); // 1
-counter1(); // 2
-
-counter2(); // 1
-----
-
-在這個例子中，`counter1` 和 `counter2` 各自擁有自己的 `count` 變數，因此兩者的計數互不影響。
-
-==== 閉包的實戰應用：只允許執行一次的函式
-
-另一個現代 JavaScript 中閉包的典型應用是創建**只允許執行一次的函式**（例如初始化操作）。閉包可以幫助我們保留一個狀態，確保某些操作只進行一次。
-
-[source, js]
-----
-function once(fn) {
-  let executed = false;
-  return function (...args) {
-    if (!executed) {
-      executed = true;
-      return fn(...args);
-    }
-  };
-}
-
-const initialize = once(() => {
-  console.log('初始化完成');
-});
-
-initialize(); // "初始化完成"
-initialize(); // 不會再次執行
-----
-
-在這個例子中，`once` 函式創建了一個閉包，變數 `executed` 在內部函式中保留並管理，確保 `fn` 只會被執行一次。這在需要保證某些邏輯只執行一次的場景中非常實用，例如初始化設定、資源加載等。
-
-==== 閉包的優勢
-
-- **私有變數**：讓變數只能被特定函式訪問，保護資料安全，避免被外部程式碼意外修改。
-- **保持狀態**：閉包可以保持函式執行後的狀態，比如計數器中的 `count`。
-- **靈活應用**：閉包可以在計數器、事件監聽、狀態管理等多種場景中應用。
-
-閉包在實際開發中也能提高程式的模組化和安全性，因此深入理解閉包對於 JavaScript 開發者來說是非常重要的。
-
-=== this
-
-[cols="1,1", options="header"]
-|===
-| 上下文 | 描述
-
-| 全域物件
-| 在全域範圍內（如瀏覽器中），`this` 指向全域物件 `window`。
-
-| 函數
-| 在普通函數中，`this` 的值取決於如何調用函數：
-  - 非嚴格模式：`this` 指向全域物件。
-  - 嚴格模式：`this` 的值為 `undefined`。
-
-| 物件方法
-| 當函數作為對象的方法調用時，`this` 指向該物件。
-| 建構子
-| 在構造函數中，`this` 指向新建立的實體。
-| 事件處理器
-| 在事件處理器中，`this` 指向觸發事件的 DOM 元素。
-| 箭頭函數 | 箭頭函數不具有自己的 this，它會從父作用域繼承 this。
-| bind()、call() 和 apply() | 這些方法可以顯式設置 this 的值：
-
-bind() 返回一個新函數，this 永久綁定到指定的對象。
-call() 和 apply() 立即調用函數並指定 this 的值。
-|===
-
-==== 全域物件
-
-[source,javascript]
-----
-
-console.log(this === window)  //true
-
-----
-
-
-==== 函數
-
-[source,javascript]
-----
-
- function run() {
-    console.log(this === window);
-}
-run();
-
-----
-
-==== 物件方法
-
-[source,javascript]
-----
-
-const obj = {
-    name: 'Alice',
-    greet() {
-        console.log('Hello, ' + this.name);
-    }
-};
-
-obj.greet(); // 輸出 "Hello, Alice"
-
-----
-
-==== 建構子
-
-[source,javascript]
-----
-
-function Person(name) {
-    this.name = name;
-}
-
-const person1 = new Person('Bob');
-console.log(person1.name); // 輸出 "Bob"
-
-----
-
-
-==== 事件處理器
-
-[source,javascript]
-----
-<button id="myButton">Click me</button>
-<p id="tar"> </p>
-<script>
-    document.getElementById('myButton').addEventListener('click', function() {
-   document.getElementById('tar').innerHTML=this
-        console.log(this); // 指向被點擊的 button 元素
-    });
-</script>
-----
-
-==== this的箭頭函數
-
-[source,javascript]
-----
-
-const objarr = {
-    name: 'Eva',
-    greet: function() {
-        const inner = () => {
-            console.log('Hello, ' + this.name);
-        };
-        inner();
-    }
-};
-
-objarr.greet(); // 輸出 "Hello, Eva"
-
-----
-
-==== bind()、call() 和 apply()
-
-[source,javascript]
-----
-const bindobj = { name: 'Charlie' };
-function sayHi() {
-    console.log('Hi, ' + this.name);
-}
-
-const boundSayHi = sayHi.bind(bindobj);
-boundSayHi(); // 輸出 "Hi, Charlie"
-
-function greet() {
-    console.log('Hello, ' + this.name);
-}
-
-const user = { name: 'Diana' };
-greet.call(user); // 輸出 "Hello, Diana"
-greet.apply(user); // 輸出 "Hello, Diana"
-
-----
-
-=== Arrow Function
-箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
-
-
-* 語法樣貌
-
-[source,javascript]
-----
-    function square(x) {
-        return x * x; //原始函數
-    }
-
-    //以下皆為Arrow Function
-    const squareByArrowFunc = (x) => {return x * x}; 
-
-    const squareByArrowFunc2 = (x) => x * x;
-
-    const squareByArrowFunc3 = x => x * x;
-
-----
-
-* 特點
-
-    ** 如果function只有一個表達式，可以省略大括號 {} 和 return 關鍵字。
-
-    ** 當只有一個參數時，參數括號也可以省略。
-
-* 不具有自己的this
-    ** 箭頭函數不會創建自己的this，它會從**父作用域**繼承this
-
-這邊使用介紹this時所用的範例 
-
-我們可以看到在objarr中定義了greet()並使用了傳統方法去建構方法，此時greet**建立了一個作用域來讓使用arrow function建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
-[source,javascript]
-----
-
-const objarr = {
-    name: 'Eva',
-    greet: function() {
-         // 注意，這裡是 function，以此為基準產生一個作用域
-        const inner = () => {
-            console.log('Hello, ' + this.name);
-        };
-        inner();
-    }
-};
-
-objarr.greet(); // 輸出 "Hello, Eva"
-
-----
-
-如果把greet也改成用arrow function的方式宣告的話
-[source, javascript]
-----
-const objarr2 = {
-    name: 'Eva',
-    greet: () => {
-         // 此時的 greet() 也沒有自己的 this ，會指向父作用域，環境是瀏覽器的話也就是windows
-        const inner = () => {
-            console.log('Hello, ' + this.name);
-        };
-        inner();
-    }
-};
-
-objarr2.greet(); // 輸出 "Hello,"
-----
-
-因為從**父作用域**繼承this的特性，使得此方式非常適合用在callback函數中
-[source,javascript]
-----
-
-function arrowWithCallBack() {
-  this.count = 0;
-
-  setInterval(() => {
-    this.count++; // 箭頭函數中的 `this` 依然指向此實例
-    console.log(this.count);
-  }, 1000);
-}
-
-const awcb = new arrowWithCallBack();
-
-----
-
-若是使用傳統方式的話，需使用bind()綁定後再做使用
-
-[source,javascript]
-----
-
-function arrowWithCallBack2() {
-  this.count = 0;
-
-  setInterval(function() {
-    this.count++; // `this` 指向全局對象NaN
-    console.log(this.count);
-  }.bind(this), 1000); // 需要使用 bind() 來綁定 `this`
-}
-
-const awcb = new arrowWithCallBack2();
-
-----
-
-* 不能用作構造函數
-** 箭頭函數不能使用 new 關鍵字來實例化。
-
-[source, javascript]
-----
-const Foo = () => {};
-const foo = new Foo(); // TypeError: Foo is not a constructor
-
-----
-
-* 沒有 arguments 參數
-** 箭頭函數沒有自己的arguments參數可以使用，但可以改用傳送..arg的方式(Rest Parameters)來進行
-
-[source, javascript]
-----
-const updateICard = (...args) => {
-  console.log(args);
-};
-
-updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
-
-----
-
 == 非同步
 
 === 同步/非同步差異
@@ -1280,6 +781,149 @@ Macrotask - setTimeout 2
 * link:https://realdennis.medium.com/%E6%80%8E%E9%BA%BC%E7%90%86%E8%A7%A3-microtask-macrotask-7754939b3c2c[參考資料5 - 怎麼理解 microtask & macrotask]
 
 * link:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop[參考資料6 - MDN The event loop]
+
+=== AJAX
+==== Ajax 介紹
+* Ajax 是 Asynchronous JavaScript and XML 的縮寫，並不是單一的技術，而是一套綜合性的瀏覽器端網頁開發技術。
+* 是因為 Google 在 2005 年推出 Gmail 服務時採用此技術而知名。
+
+==== Ajax 提升使用者體驗
+1. 網站性能優化：使用 Ajax 實現動態載入
+    * 傳統的網站在瀏覽不同頁面時，每次都需要向伺服器發送請求並等待回應，瀏覽器還需要重新渲染整個頁面。但使用 Ajax，可以只更新頁面上的某些部分，而不是整個頁面。
+    * 動態載入例子：購物網內，點不同商品只有商品詳細訊息被更新，其他保持不變。
+2. 使用者體驗改善：使用 Ajax 實現無刷新更新
+    * 傳統的表單提交會導致瀏覽器重新載入頁面。但使用 Ajax 可以在不刷新頁面的情況下提交數據，並更新部分內容。
+    * 無刷新更新例子：搜尋引擎中的關鍵字建議。
+
+* 下面 link:example/ex3.html[例子] 是 Ajax 的部分更新
+
+[source,html]
+----
+<h1>靜態標題</h1>
+<p>靜態內容</p>
+<button onclick="loadData(1)">更新成內容1</button>
+<button onclick="loadData(2)">更新成內容2</button>
+<button onclick="loadData(3)">更新成內容3</button>
+<div id="content">
+    <h3>原始標題</h3>
+    <p>原始內文</p>
+</div>
+<script>
+  function loadData(postId) {
+      fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+          .then(response => response.json())
+          .then(data => {
+              document.getElementById('content').innerHTML = `
+                  <h3>${data.title}</h3>
+                  <p>${data.body}</p>
+              `;
+          })
+          .catch(error => console.error('Error:', error));
+  }
+</script>
+----
+
+* 這段代碼中，使用了 fetch() 來發送 HTTP 請求到 `https://jsonplaceholder.typicode.com/posts/${postId}`，請求數據並通過 `.then(response => response.json())`` 將回應轉換為 JSON 格式的數據。
+
+* `.then(data => { ... })` 接收轉換後的數據，用這些數據來覆蓋原本的 HTML 內容。
+
+* `document.getElementById('content').innerHTML`更改 content 這個 <div> 元素的內容，將其覆蓋為新的 <h3> 和 <p> 元素。
+
+==== AJAX 的實現方式
+
+===== 最原始的方式
+
+* **XMLHttpRequest**： +
+需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
+  
+[source,javascript]
+----
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        console.log(JSON.parse(xhr.responseText));
+    } else {
+        console.error('Request failed.');
+    }
+};
+xhr.send();
+----
+
+* **Fetch API**： +
+比較現代的方式，使用 Promise 來進行非同步操作。比  `XMLHttpRequest` 更加簡潔。
+
+[source,javascript]
+----
+fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+----
+
+===== 工具與框架
+
+* **Axios**： +
+  基於 **Promise** 的 HTTP 客戶端，在 `Fetch API` 的基礎上進一步封裝，提供了一些更方便的功能，例如錯誤處理、請求取消等。
+
+[source, javascript]
+----
+axios.get('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => console.log(response.data))
+    .catch(error => console.error('Error:', error));
+----
+
+* **jQuery 的 $.ajax()**： +
+  是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在主要出現在一些老項目。
+
+[source, javascript]
+----
+$.ajax({
+    url: 'https://jsonplaceholder.typicode.com/posts/1',
+    method: 'GET',
+    success: function(data) {
+        console.log(data);
+    },
+    error: function(error) {
+        console.error('Error:', error);
+    }
+});
+----
+
+==== 總結
+
+* Ajax是一套綜合性瀏覽器端技術，結合多種前端技術，透過非同步請求來提升使用者體驗。
+
+|===
+| 技術          | 描述
+
+| HTML/CSS
+| 定義網頁的結構和樣式，使網頁具有良好的外觀和版面
+
+| JavaScript
+| 控制頁面的動態行為，操作 DOM，實現非同步資料互動
+
+| XMLHttpRequest 或 Fetch API
+| 與伺服器進行非同步通訊，實現資料的部分更新
+
+| JSON/XML
+| 瀏覽器和伺服器之間的資料格式
+|===
+
+
+
+* 實現方式有下面幾種
+|===
+| 實現方式        | 說明
+
+| XMLHttpRequest  | 最早期的 AJAX 實現方式，手動處理請求的建立、發送及回應。
+| Fetch API       | 現代化的替代方案，語法簡潔，基於 Promise 進行非同步操作。
+| Axios           | 基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友善的語法及更多功能（如錯誤處理、取消請求等）。
+| jQuery 的 $.ajax() | 早期廣泛使用的 AJAX 方法，現在主要用於一些舊有項目中。
+|===
+
+* link:https://www.keycdn.com/support/ajax-programming[參考資料7 - What Is Ajax Programming - Explained]
+* link:https://codedocs.org/what-is/ajax-programming[參考資料8 - Ajax (programming)]
 
 === XMLHttpRequest/fetch
 XMLHttpRequest（簡稱 XHR）是一種在網頁中與伺服器進行資料交換的 API，允許在不重新載入整個頁面的情況下，動態地更新部分網頁內容。這使得網頁應用程式在更新部分資料時不會去中斷使用者當下的操作。
@@ -1529,148 +1173,73 @@ async function fetchUserData() {
 fetchUserData();
 ----
 
-=== AJAX
-==== Ajax 介紹
-* Ajax 是 Asynchronous JavaScript and XML 的縮寫，並不是單一的技術，而是一套綜合性的瀏覽器端網頁開發技術。
-* 是因為 Google 在 2005 年推出 Gmail 服務時採用此技術而知名。
+=== try…​catch 與非同步
+:toc: macro
 
-==== Ajax 提升使用者體驗
-1. 網站性能優化：使用 Ajax 實現動態載入
-    * 傳統的網站在瀏覽不同頁面時，每次都需要向伺服器發送請求並等待回應，瀏覽器還需要重新渲染整個頁面。但使用 Ajax，可以只更新頁面上的某些部分，而不是整個頁面。
-    * 動態載入例子：購物網內，點不同商品只有商品詳細訊息被更新，其他保持不變。
-2. 使用者體驗改善：使用 Ajax 實現無刷新更新
-    * 傳統的表單提交會導致瀏覽器重新載入頁面。但使用 Ajax 可以在不刷新頁面的情況下提交數據，並更新部分內容。
-    * 無刷新更新例子：搜尋引擎中的關鍵字建議。
+==== **語法**
 
-* 下面 link:example/ex3.html[例子] 是 Ajax 的部分更新
-
-[source,html]
-----
-<h1>靜態標題</h1>
-<p>靜態內容</p>
-<button onclick="loadData(1)">更新成內容1</button>
-<button onclick="loadData(2)">更新成內容2</button>
-<button onclick="loadData(3)">更新成內容3</button>
-<div id="content">
-    <h3>原始標題</h3>
-    <p>原始內文</p>
-</div>
-<script>
-  function loadData(postId) {
-      fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
-          .then(response => response.json())
-          .then(data => {
-              document.getElementById('content').innerHTML = `
-                  <h3>${data.title}</h3>
-                  <p>${data.body}</p>
-              `;
-          })
-          .catch(error => console.error('Error:', error));
-  }
-</script>
-----
-
-* 這段代碼中，使用了 fetch() 來發送 HTTP 請求到 `https://jsonplaceholder.typicode.com/posts/${postId}`，請求數據並通過 `.then(response => response.json())`` 將回應轉換為 JSON 格式的數據。
-
-* `.then(data => { ... })` 接收轉換後的數據，用這些數據來覆蓋原本的 HTML 內容。
-
-* `document.getElementById('content').innerHTML`更改 content 這個 <div> 元素的內容，將其覆蓋為新的 <h3> 和 <p> 元素。
-
-==== AJAX 的實現方式
-
-===== 最原始的方式
-
-* **XMLHttpRequest**： +
-需要手動處理請求的建立 (open 方法)、發送 (send 方法)、以及如何處理回應 (onload 事件)。
-  
-[source,javascript]
-----
-const xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
-xhr.onload = function() {
-    if (xhr.status === 200) {
-        console.log(JSON.parse(xhr.responseText));
-    } else {
-        console.error('Request failed.');
-    }
-};
-xhr.send();
-----
-
-* **Fetch API**： +
-比較現代的方式，使用 Promise 來進行非同步操作。比  `XMLHttpRequest` 更加簡潔。
+try catch 可以處理同步的程式碼。
+try區塊後需要有catch 或 finally。
 
 [source,javascript]
 ----
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
+try{
+    //block
+}catch(e){ //這裏的e是block區塊中被丟出的任意物件(通常是xxError)
+ 
+}finally{
+//一定會執行的區塊
+}
 ----
 
-===== 工具與框架
+==== **try catch 與非同步**
 
-* **Axios**： +
-  基於 **Promise** 的 HTTP 客戶端，在 `Fetch API` 的基礎上進一步封裝，提供了一些更方便的功能，例如錯誤處理、請求取消等。
+try catch 可以處理同步的程式碼，以下有數種可以處理非同步程式的錯誤的方式
 
-[source, javascript]
+1.前面有加上await的函式
+
+[source,javascript]
 ----
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-    .then(response => console.log(response.data))
-    .catch(error => console.error('Error:', error));
-----
-
-* **jQuery 的 $.ajax()**： +
-  是 jQuery 中的 AJAX 方法，早期廣泛使用，但現在主要出現在一些老項目。
-
-[source, javascript]
-----
-$.ajax({
-    url: 'https://jsonplaceholder.typicode.com/posts/1',
-    method: 'GET',
-    success: function(data) {
-        console.log(data);
-    },
-    error: function(error) {
-        console.error('Error:', error);
+async function awaitrun() {
+    console.log('run')
+    throw new Error("這是非同步中的錯誤");
+}
+async function inner() {
+    try {
+        await awaitrun();
+    } catch (e) {
+        console.log('我抓到的錯誤', e)
     }
-});
+
+}
+inner();
 ----
 
-==== 總結
+2.直接在call back裡面try catch
 
-* Ajax是一套綜合性瀏覽器端技術，結合多種前端技術，透過非同步請求來提升使用者體驗。
+[source,javascript]
+----
 
-|===
-| 技術          | 描述
+function callbackrun() {
+    console.log('run')
+    setTimeout(() => {
+        throw new Error("這是callback中的錯誤");
+    }, 1000)
 
-| HTML/CSS
-| 定義網頁的結構和樣式，使網頁具有良好的外觀和版面
+}
+async function inner() {
+    try {
+        callbackrun()
+    } catch (e) {
+        console.log('我抓到的錯誤', e)
+    }
 
-| JavaScript
-| 控制頁面的動態行為，操作 DOM，實現非同步資料互動
+}
+inner();
 
-| XMLHttpRequest 或 Fetch API
-| 與伺服器進行非同步通訊，實現資料的部分更新
+----
 
-| JSON/XML
-| 瀏覽器和伺服器之間的資料格式
-|===
-
-
-
-* 實現方式有下面幾種
-|===
-| 實現方式        | 說明
-
-| XMLHttpRequest  | 最早期的 AJAX 實現方式，手動處理請求的建立、發送及回應。
-| Fetch API       | 現代化的替代方案，語法簡潔，基於 Promise 進行非同步操作。
-| Axios           | 基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友善的語法及更多功能（如錯誤處理、取消請求等）。
-| jQuery 的 $.ajax() | 早期廣泛使用的 AJAX 方法，現在主要用於一些舊有項目中。
-|===
-
-* link:https://www.keycdn.com/support/ajax-programming[參考資料7 - What Is Ajax Programming - Explained]
-* link:https://codedocs.org/what-is/ajax-programming[參考資料8 - Ajax (programming)]
+如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
 
 === Promise
 一個非同步操作的最終完成（或失敗）及其結果值。 +
@@ -2169,70 +1738,503 @@ getData("https://example.com/data");
 * **程式碼流程**: `async/await` 可以使非同步程式碼看起來更像同步程式碼，更容易閱讀和理解。`Promise` 的程式碼流程則較為不連貫。
 
 
-=== try…​catch 與非同步
-:toc: macro
 
-==== **語法**
 
-try catch 可以處理同步的程式碼。
-try區塊後需要有catch 或 finally。
+== 函式
 
-[source,javascript]
-----
-try{
-    //block
-}catch(e){ //這裏的e是block區塊中被丟出的任意物件(通常是xxError)
- 
-}finally{
-//一定會執行的區塊
-}
-----
+=== Arrow Function
+箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
 
-==== **try catch 與非同步**
 
-try catch 可以處理同步的程式碼，以下有數種可以處理非同步程式的錯誤的方式
-
-1.前面有加上await的函式
+* 語法樣貌
 
 [source,javascript]
 ----
-async function awaitrun() {
-    console.log('run')
-    throw new Error("這是非同步中的錯誤");
-}
-async function inner() {
-    try {
-        await awaitrun();
-    } catch (e) {
-        console.log('我抓到的錯誤', e)
+    function square(x) {
+        return x * x; //原始函數
     }
 
-}
-inner();
+    //以下皆為Arrow Function
+    const squareByArrowFunc = (x) => {return x * x}; 
+
+    const squareByArrowFunc2 = (x) => x * x;
+
+    const squareByArrowFunc3 = x => x * x;
+
 ----
 
-2.直接在call back裡面try catch
+* 特點
+
+    ** 如果function只有一個表達式，可以省略大括號 {} 和 return 關鍵字。
+
+    ** 當只有一個參數時，參數括號也可以省略。
+
+* 不具有自己的this
+    ** 箭頭函數不會創建自己的this，它會從**父作用域**繼承this
+
+這邊使用介紹this時所用的範例 
+
+我們可以看到在objarr中定義了greet()並使用了傳統方法去建構方法，此時greet**建立了一個作用域來讓使用arrow function建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
+[source,javascript]
+----
+
+const objarr = {
+    name: 'Eva',
+    greet: function() {
+         // 注意，這裡是 function，以此為基準產生一個作用域
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr.greet(); // 輸出 "Hello, Eva"
+
+----
+
+如果把greet也改成用arrow function的方式宣告的話
+[source, javascript]
+----
+const objarr2 = {
+    name: 'Eva',
+    greet: () => {
+         // 此時的 greet() 也沒有自己的 this ，會指向父作用域，環境是瀏覽器的話也就是windows
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr2.greet(); // 輸出 "Hello,"
+----
+
+因為從**父作用域**繼承this的特性，使得此方式非常適合用在callback函數中
+[source,javascript]
+----
+
+function arrowWithCallBack() {
+  this.count = 0;
+
+  setInterval(() => {
+    this.count++; // 箭頭函數中的 `this` 依然指向此實例
+    console.log(this.count);
+  }, 1000);
+}
+
+const awcb = new arrowWithCallBack();
+
+----
+
+若是使用傳統方式的話，需使用bind()綁定後再做使用
 
 [source,javascript]
 ----
 
-function callbackrun() {
-    console.log('run')
-    setTimeout(() => {
-        throw new Error("這是callback中的錯誤");
-    }, 1000)
+function arrowWithCallBack2() {
+  this.count = 0;
 
+  setInterval(function() {
+    this.count++; // `this` 指向全局對象NaN
+    console.log(this.count);
+  }.bind(this), 1000); // 需要使用 bind() 來綁定 `this`
 }
-async function inner() {
-    try {
-        callbackrun()
-    } catch (e) {
-        console.log('我抓到的錯誤', e)
-    }
 
-}
-inner();
+const awcb = new arrowWithCallBack2();
 
 ----
 
-如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
+* 不能用作構造函數
+** 箭頭函數不能使用 new 關鍵字來實例化。
+
+[source, javascript]
+----
+const Foo = () => {};
+const foo = new Foo(); // TypeError: Foo is not a constructor
+
+----
+
+* 沒有 arguments 參數
+** 箭頭函數沒有自己的arguments參數可以使用，但可以改用傳送..arg的方式(Rest Parameters)來進行
+
+[source, javascript]
+----
+const updateICard = (...args) => {
+  console.log(args);
+};
+
+updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
+
+----
+
+=== this
+
+[cols="1,1", options="header"]
+|===
+| 上下文 | 描述
+
+| 全域物件
+| 在全域範圍內（如瀏覽器中），`this` 指向全域物件 `window`。
+
+| 函數
+| 在普通函數中，`this` 的值取決於如何調用函數：
+  - 非嚴格模式：`this` 指向全域物件。
+  - 嚴格模式：`this` 的值為 `undefined`。
+
+| 物件方法
+| 當函數作為對象的方法調用時，`this` 指向該物件。
+| 建構子
+| 在構造函數中，`this` 指向新建立的實體。
+| 事件處理器
+| 在事件處理器中，`this` 指向觸發事件的 DOM 元素。
+| 箭頭函數 | 箭頭函數不具有自己的 this，它會從父作用域繼承 this。
+| bind()、call() 和 apply() | 這些方法可以顯式設置 this 的值：
+
+bind() 返回一個新函數，this 永久綁定到指定的對象。
+call() 和 apply() 立即調用函數並指定 this 的值。
+|===
+
+==== 全域物件
+
+[source,javascript]
+----
+
+console.log(this === window)  //true
+
+----
+
+
+==== 函數
+
+[source,javascript]
+----
+
+ function run() {
+    console.log(this === window);
+}
+run();
+
+----
+
+==== 物件方法
+
+[source,javascript]
+----
+
+const obj = {
+    name: 'Alice',
+    greet() {
+        console.log('Hello, ' + this.name);
+    }
+};
+
+obj.greet(); // 輸出 "Hello, Alice"
+
+----
+
+==== 建構子
+
+[source,javascript]
+----
+
+function Person(name) {
+    this.name = name;
+}
+
+const person1 = new Person('Bob');
+console.log(person1.name); // 輸出 "Bob"
+
+----
+
+
+==== 事件處理器
+
+[source,javascript]
+----
+<button id="myButton">Click me</button>
+<p id="tar"> </p>
+<script>
+    document.getElementById('myButton').addEventListener('click', function() {
+   document.getElementById('tar').innerHTML=this
+        console.log(this); // 指向被點擊的 button 元素
+    });
+</script>
+----
+
+==== this的箭頭函數
+
+[source,javascript]
+----
+
+const objarr = {
+    name: 'Eva',
+    greet: function() {
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr.greet(); // 輸出 "Hello, Eva"
+
+----
+
+==== bind()、call() 和 apply()
+
+[source,javascript]
+----
+const bindobj = { name: 'Charlie' };
+function sayHi() {
+    console.log('Hi, ' + this.name);
+}
+
+const boundSayHi = sayHi.bind(bindobj);
+boundSayHi(); // 輸出 "Hi, Charlie"
+
+function greet() {
+    console.log('Hello, ' + this.name);
+}
+
+const user = { name: 'Diana' };
+greet.call(user); // 輸出 "Hello, Diana"
+greet.apply(user); // 輸出 "Hello, Diana"
+
+----
+
+=== 立即調用函式 IIFE (Immediately Invoked Function Expression)
+JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
+
+IIFE格式長這樣：
+
+[source, javascript]
+----
+(function () {
+  // Code to be executed
+})();
+----
+在這種表達式中，函式定義與函式調用的括號是一起的，確保函式只會被執行一次，而不是定義後可以多次執行。在這個封閉的作用域中，變量和函式都不會污染全局環境。
+
+==== IIFE的優點
+
+.創建局部作用域
+
+通過使用 IIFE 可以創建一個局部作用域，避免全局變量的污染。以下程式碼可以看到，在 IIFE 中，有一個局部變量 localVariable。localVariable 只能在 IIFE 內訪問，不能在 IIFE 外訪問
+[source, javascript]
+----
+var globalVariable = "global variable";
+
+(function () {
+  var localVariable = "local variable";
+  console.log(localVariable); // local variable
+})();
+
+console.log(localVariable); // ReferenceError: localVariable is not defined
+console.log(globalVariable); // global variable
+----
+
+.避免命名衝突
+IIFE 可以為變量創建了一個單獨的命名空間，避免函式名和變量名的衝突。
+[source, javascript]
+----
+var testIIFE = "I'm a global variable";
+
+(function () {
+  var testIIFE = "I'm a local variable";
+  console.log(testIIFE); // local variable
+})();
+
+console.log(testIIFE); // global variable
+----
+
+.模組化編程
+關鍵概念是將一段代碼封裝在一個函數中，並立即執行這個函數。這樣可以將變數和函數限制在 IIFE 的作用域內，避免與外部代碼的命名衝突，並且可以選擇性地暴露特定功能給外界。
+[source, javascript]
+----
+// 定義一個 IIFE 模組
+const myIIFEModule = (function () {
+    // 私有變數和函數
+    let privateVariable = 'This is a private variable';
+
+    function privateFunction() {
+        console.log(privateVariable);
+    }
+
+    // 公開的 API
+    return {
+        publicVariable: 'This is a public variable',
+
+        publicFunction: function () {
+            console.log('Accessing public function');
+            privateFunction();  // 可以訪問私有函數
+        }
+    };
+})();
+
+// 使用模組
+console.log(myIIFEModule.publicVariable);  // "This is a public variable"
+myIIFEModule.publicFunction();             // "Accessing public function"
+                                        // "This is a private variable"
+
+// 無法直接訪問私有變數和函數
+console.log(myIIFEModule.privateVariable);  // undefined
+myIIFEModule.privateFunction();             // TypeError: myIIFEModule.privateFunction is not a function
+----
+透過 return 語句，公開了模組的一部分功能，即 publicVariable 和 publicFunction，這些成員可以被外部訪問。
+
+.提高程式碼執行效率
+
+IIFE 可以在定義時立即執行，避免了函式的不必要的存儲和調用，提高了程式碼的執行效率。
+
+==== IIFE的缺點
+.程式碼不易維護
+當程式碼變得更加複雜時，IIFE 的程式碼容易變得龐大，不易於維護和閱讀
+
+.不利於重複使用
+IIFE 的程式碼通常是一次性的，無法復用，因此在需要多次調用時不太方便。
+
+.增加程式碼複雜度：
+使用 IIFE 可能會使程式碼變得更加複雜，特別是當程式碼量很大時。
+
+==== 範例題型
+[source, javascript]
+----
+{
+    for (var i = 0; i < 3; i++) {
+            setTimeout(function() {
+                console.log(j);  // 輸出 3, 3, 3
+            }, 1000);
+    }
+}
+----
+var 聲明的變量是函式作用域，因此，在循環結束後，i 的值為 3，每個 setTimeout 回調函式引用的都是同一個 i 變量，因此輸出的結果都是 3。
+
+解法:IIFE 可以幫助避免這些問題。
+
+[source, javascript]
+----
+{
+    for (var i = 0; i < 3; i++) {
+        (function(j) {
+            setTimeout(function() {
+                console.log(j);  // 輸出 0, 1, 2
+            }, 1000);
+        })(i);
+    }
+}
+----
+
+這裡每次迴圈都立即執行 IIFE，將當前的 i 值作為參數傳遞，避免了變數提升導致的問題。如果不使用 IIFE，所有的定時器都會在 1 秒後輸出相同的 i 值（最終值 3）。
+=== 高階函式 Higher-Order Function
+
+=== 閉包 Closure
+閉包是 JavaScript 中非常重要的概念。透過理解靜態作用域和閉包，可以在開發中解決許多實際問題。
+
+==== 什麼是靜態作用域？
+
+**靜態作用域**（也稱為**詞法作用域**）是指 JavaScript 的作用域在程式碼撰寫時就已經確定，並且在執行過程中不會改變。例如：
+
+[source, js]
+----
+function fn1() {
+  console.log(a);
+}
+function fn2() {
+  var a = 1;
+  fn1();
+}
+fn2(); // ReferenceError: a is not defined
+----
+
+在這個例子中，`fn1` 和 `fn2` 的作用域是獨立的，因此 `fn1` 無法訪問到 `fn2` 中的變數 `a`。
+
+但如果有一個內層函式可以取用外層函式的變數，那就是閉包的概念了。例如：
+
+[source, js]
+----
+function sayHi() {
+  var name = '小明';
+
+  function addString() {
+    console.log(`${name} 你好`);  // 取用外層的變數
+  }
+  addString();
+}
+sayHi(); // "小明 你好"
+----
+
+在這裡，`addString` 可以取用 `sayHi` 中的變數 `name`，這就形成了閉包。閉包讓內部函式能保留並使用外部函式的變數。
+
+==== 閉包的用途：創建私有變數
+
+閉包常用於**創建私有變數**，使得這些變數只能由特定函式訪問，這樣可以避免不必要的修改，增強資料的安全性。
+例如：
+
+[source, js]
+----
+function createCounter() {
+  var count = 0;
+  return function () {
+    count++;
+    console.log(count);
+  };
+}
+
+const counter = createCounter();
+counter(); // 1
+counter(); // 2
+----
+
+在這裡，`count` 是 `createCounter` 的私有變數，只有返回的內部函式可以訪問它。確保 `count` 的值不會被外部程式碼隨意修改。
+
+==== 閉包實際的應用
+
+透過閉包，可以創建多個相互獨立的計數器，每個計數器的變數互不干擾：
+
+[source, js]
+----
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+counter1(); // 1
+counter1(); // 2
+
+counter2(); // 1
+----
+
+在這個例子中，`counter1` 和 `counter2` 各自擁有自己的 `count` 變數，因此兩者的計數互不影響。
+
+==== 閉包的實戰應用：只允許執行一次的函式
+
+另一個現代 JavaScript 中閉包的典型應用是創建**只允許執行一次的函式**（例如初始化操作）。閉包可以幫助我們保留一個狀態，確保某些操作只進行一次。
+
+[source, js]
+----
+function once(fn) {
+  let executed = false;
+  return function (...args) {
+    if (!executed) {
+      executed = true;
+      return fn(...args);
+    }
+  };
+}
+
+const initialize = once(() => {
+  console.log('初始化完成');
+});
+
+initialize(); // "初始化完成"
+initialize(); // 不會再次執行
+----
+
+在這個例子中，`once` 函式創建了一個閉包，變數 `executed` 在內部函式中保留並管理，確保 `fn` 只會被執行一次。這在需要保證某些邏輯只執行一次的場景中非常實用，例如初始化設定、資源加載等。
+
+==== 閉包的優勢
+
+- **私有變數**：讓變數只能被特定函式訪問，保護資料安全，避免被外部程式碼意外修改。
+- **保持狀態**：閉包可以保持函式執行後的狀態，比如計數器中的 `count`。
+- **靈活應用**：閉包可以在計數器、事件監聽、狀態管理等多種場景中應用。
+
+閉包在實際開發中也能提高程式的模組化和安全性，因此深入理解閉包對於 JavaScript 開發者來說是非常重要的。
