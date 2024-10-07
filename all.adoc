@@ -349,7 +349,7 @@ try {
 }
 ----
 
-= 變數與作用域
+== 變數與作用域
 
 == var / let / const 差異
 在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
