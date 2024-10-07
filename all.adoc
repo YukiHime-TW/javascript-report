@@ -987,22 +987,22 @@ JavaScript 的 fetch API 是一個由 WHATWG Fetch Standard 所定義的**能獲
 | 項目 | 說明
 
 | **Request**
-| 可以將URL、請求方法、標頭與請求的內容封裝在request物件中使用。
+| Request 物件用於封裝網絡請求的各個部分，包括 URL、請求方法（如 GET、POST）、標頭（Headers）以及請求的內容（Body）。
 
 
 | **Response**
-| 表示將request打出去後，伺服器所回傳的回傳內容，包含了Http狀態碼、標頭(Header)、以及回傳內容(Body)等等。
+| Response 物件代表伺服器回應的內容，包括 HTTP 狀態碼（如 200、404）、標頭（Headers）以及回傳的資料（Body）。可以通過不同的方法來解析回應內容，例如 .json() 解析為 JSON 格式，.text() 解析為純文字等。
 
 | **Header**
 | 用於操作 HTTP 標頭，提供方法如 get()、set()、append() 等來讀取和修改標頭。
 
 | **Body**
-| Request 和 Response 會繼承 Body，Body物件上提供了處理請求和回應的各種方法，如 .json()、.text()、.blob() 等，用於不同格式的資料。
+|Body 介面是 Request 和 Response 的基礎，提供多種方法來處理請求和回應的內容。常用的方法包括 .json() 將回應解析為 JSON，.text() 解析為文字，.blob() 解析為二進制大對象（Blob）等。
 |===
 
-* 如何使用fetch取得資源
+* 要呼叫fetch()方法只要在 Global環境下可直接呼叫fetch方法即可
 
-.在 Global環境下可直接呼叫fetch方法來進行呼叫
+.如何使用fetch取得資源
 [source, javascript]
 ----
 
@@ -1846,7 +1846,7 @@ const awcb = new arrowWithCallBack2();
 ----
 
 * 不能用作構造函數
-** 箭頭函數不能使用 new 關鍵字來實例化。
+** 箭頭函數本質上是匿名函數，它們沒有內部的 Construct 方法也沒有 super ，所以不能使用 new 關鍵字來實例化。
 
 [source, javascript]
 ----
@@ -1858,6 +1858,24 @@ const foo = new Foo(); // TypeError: Foo is not a constructor
 * 沒有 arguments 參數
 ** 箭頭函數沒有自己的arguments參數可以使用，但可以改用傳送..arg的方式(Rest Parameters)來進行
 
+.傳統函數
+[source, javascript]
+----
+function func1(a, b, c) {
+  console.log(arguments[0]);
+  // Expected output: 1
+
+  console.log(arguments[1]);
+  // Expected output: 2
+
+  console.log(arguments[2]);
+  // Expected output: 3
+}
+
+func1(1, 2, 3);
+----
+
+.使用Rest Parameters搭配arrow function
 [source, javascript]
 ----
 const updateICard = (...args) => {
