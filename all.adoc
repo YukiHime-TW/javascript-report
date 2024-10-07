@@ -2064,8 +2064,8 @@ async function f() {
 f();
 // 輸出：
 // Start
-// End
 // Hello! ExplainThis!
+// End
 ----
 
 * `await` 可以與 `Promise.all()` 一起使用，以等待多個 Promise 同時完成：
