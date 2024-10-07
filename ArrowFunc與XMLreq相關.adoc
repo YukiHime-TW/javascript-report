@@ -131,6 +131,10 @@ XMLHttpRequest（簡稱 XHR）是一種在網頁中與伺服器進行資料交�
 
 * 特色
 
+** XHR基於事件，它通過監聽和處理不同的事件來管理請求的生命周期。這些事件主要依賴於回調函數（事件監聽器）來處理異步操作的結果。
+
+** XHR 可以在後台發送請求，並在伺服器回應時處理資料，而不會阻塞用戶界面的操作。
+
 ** 此項技術在所謂的「AJAX」（Asynchronous JavaScript and XML）功能應用中被大量使用。
 
 ** XMLHttpRequest 可用來接收任何類型的資料，不限於 XML 類型。
@@ -282,7 +286,7 @@ fetch('https://httpbin.org/post', {
 
 * 回調地獄
 
-假設我要取得某位使用者的貼文與他的貼文評論時，用XHR寫起來會是像在打波動拳。
+XHR的使用皆**基於回調函數**，假設我要取得某位使用者的貼文與他的貼文評論時，用XHR寫起來會是像在打波動拳。
 
 不囉說,直接上圖
 [source, javascript]
@@ -307,7 +311,7 @@ fetch('https://httpbin.org/post', {
             };
             xhr.send();
         }
-        // 使用回調地獄的方式進行多個依賴性請求
+        // 使用回調波動拳
         getData('https://jsonplaceholder.typicode.com/users/1', function(err, user) {
             if (err) {
                 console.error('獲取使用者資料時出現錯誤:', err);
@@ -336,7 +340,7 @@ fetch('https://httpbin.org/post', {
         });
 ----
 
-使用fetch進行請求
+使用fetch進行請求的話看起來不會那麼凌亂，並且因為基於Promise，可以使用tryCatch進行錯誤處理。
 
 [source, javascript]
 ----
@@ -373,3 +377,48 @@ async function fetchUserData() {
 // 執行異步函數
 fetchUserData();
 ----
+
+== 總結
+以下是XMLHttpRequest與fetch的比較
+
+[options="header", cols="3*"]
+|===
+| 比較項目 | Fetch API | XMLHttpRequest
+
+| **語法**
+| 基於 Promise，語法更現代化、簡潔。
+| 基於事件的回調函數，語法較為冗長。
+
+| **基於 Promises**
+| 是，使用 `then` 和 `catch` 處理異步操作。
+| 否，依賴事件和回調函數處理異步操作。
+
+| **易用性**
+| 更易讀、更易維護，支持鏈式調用。
+| 相對複雜，尤其是在處理多個異步操作時。
+
+| **錯誤處理**
+| 更加直觀，使用 `try...catch` 可以捕捉異常。
+| 錯誤處理不夠直觀，需要依賴事件監聽。
+
+| **上傳/下載進度**
+| 原生不支持，需要使用 `ReadableStream` 等進階技術。
+| 支持 `onprogress` 事件來監控進度。
+
+| **CORS 支持**
+| 原生支持跨域請求，且默認不攜帶憑證。
+| 支持跨域，但需要設置 `withCredentials` 屬性。
+
+| **返回格式**
+| 支持多種格式，如 `json()`, `blob()`, `text()` 等。
+| 主要通過 `responseText` 或 `responseXML` 獲取。
+
+| **瀏覽器支持**
+| 現代瀏覽器廣泛支持，但 IE 不支持。
+| 幾乎所有瀏覽器都支持，包括 IE。
+
+| **流式處理**
+| 支持流式讀取響應數據，適合處理大數據或實時數據。
+| 不支持流式處理，需等待整個響應完成後再處理。
+|===
+
