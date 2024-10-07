@@ -594,7 +594,7 @@ console.log(myDessert5); // ReferenceError: myDessert5 is not defined
         myDessert7 = "pie";
         
         console.log(myDessert7); // pie
-    
+    }
 }
 ----
 === TDZ小結
