@@ -78,8 +78,10 @@ console.log(person1.name); // 輸出 "Bob"
 
 ----
 <button id="myButton">Click me</button>
+<p id="tar"> </p>
 <script>
     document.getElementById('myButton').addEventListener('click', function() {
+   document.getElementById('tar').innerHTML=this
         console.log(this); // 指向被點擊的 button 元素
     });
 </script>

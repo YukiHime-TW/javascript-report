@@ -126,14 +126,16 @@ console.log(result2); // 輸出10
 
 上述範例中由於??只會檢查null或undefined，因此輸出結果依然是1，而||會檢查Falsy，由於0是屬於Falsy，所以會賦予右側的值給result2，結果輸出就會是10
 
+NOTE: ??與||同樣為短路運算子，因此??在判斷左側不為null或undefined時，就不會再執行右側的程式
+
 == Falsy
-在 JavaScript 中，Falsy 值是指在布林值轉換時會被判定為 false 的值。當在需要布林值的地方（如條件判斷）使用這些值時，皆會被視為 false。
+在 JavaScript 中，Falsy 值是指在布林值轉換時會被判定為 false 的值。當在需要布林值的地方（如條件判斷）使用這些值時，皆會被視為 false，其餘的則會轉成true(Truthy)
 
 === 會被視為Falsy的值
 * false
 * 0
 * -0
-* "" 或 ''
+* "" 或 ''(空字串)
 * null
 * undefined
 * NaN
@@ -171,6 +173,29 @@ if (!undefined) {
 
 if (!NaN) {
     console.log("NaN是 Falsy 值");
+}
+----
+
+因此在javaScript的條件判斷中就算不放條件式程式也可以正常執行，因為javaScript會自己判斷內容是Truthy或Falsy，並且轉換成true或false
+
+[js]
+----
+if(1) {
+    console.log("Truthy")
+} else {
+    console.log("Falsy")
+}
+
+if("abc") {
+    console.log("Truthy")
+} else {
+    console.log("Falsy")
+}
+
+if(0) {
+    console.log("Truthy")
+} else {
+    console.log("Falsy")
 }
 ----
 
@@ -264,7 +289,7 @@ try {
     const user = { name: '', age: 16 };
     validateUser(user);
 } catch (err) {
-    console.log("${err.message} in ${err.field} field");
+    console.log(`${err.message} in ${err.field} field`);
     console.log(err.stack)
 }
 ----
@@ -281,7 +306,7 @@ class AuthenticationError extends Error {
 }
 
 function login(username, password) {
-    const storedPassword = 'password123'; // 假設這是從數據庫獲取的密碼
+    const storedPassword = 'password123'; // 假設這是從資料庫獲取的密碼
     if (password !== storedPassword) {
         throw new AuthenticationError('Invalid password', 'incorrect_password');
     }

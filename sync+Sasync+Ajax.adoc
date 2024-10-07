@@ -53,7 +53,6 @@ link:https://html.spec.whatwg.org/multipage/images.html#attributes-common-to-sou
 === 以 setTimeout() 函式例子來解釋
 
 * 一般情況下，同步的程式碼會到 Call Stack（後進先出）內逐一執行。
-* link:https://developer.mozilla.org/en-US/docs/Glossary/Call_stack[參考資料3]
 
 image::images//img3.png[同步]
 
@@ -75,8 +74,6 @@ image::images//img4.png[非同步]
 **執行順序為：同步任務 → 微任務 → 宏任務**
 
 image::images//queue.gif[流程]
-
-* link:https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop[參考資料4]
 
 * 每次 Macrotask 後還會檢查 Microtask
 * link:example/ex2.html[Macrotask 還會檢查 Microtask]
@@ -130,6 +127,13 @@ Macrotask - setTimeout 2
 | 對應 JavaScript | 直接執行的函式調用，例如簡單數學計算   | `setTimeout()`、`fetch()` 等非同步操作
 |===
 
+* link:https://developer.mozilla.org/en-US/docs/Glossary/Call_stack[參考資料3 - MDN Call stack]
+
+* link:https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop[參考資料4 - Event Loop，Macrotask跟Microtask是什麼？]
+
+* link:https://realdennis.medium.com/%E6%80%8E%E9%BA%BC%E7%90%86%E8%A7%A3-microtask-macrotask-7754939b3c2c[參考資料5 - 怎麼理解 microtask & macrotask]
+
+* link:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop[參考資料6 - MDN The event loop]
 
 == Ajax
 
@@ -242,13 +246,35 @@ Macrotask - setTimeout 2
 
 === 總結
 
-* Ajax是一套綜合性瀏覽器端技術，通過非同步請求來提升使用者體驗。
+* Ajax是一套綜合性瀏覽器端技術，結合多種前端技術，透過非同步請求來提升使用者體驗。
 
 |===
-| 實現方式        | 描述
+| 技術          | 描述
 
-| XMLHttpRequest  | 最原始的 AJAX 實現方式，手動處理請求的建立、發送及回應。
-| Fetch API       | 現代的替代方案，語法簡潔，基於 Promise 進行非同步操作。
-| Axios           | 基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友好的語法及更多功能（如錯誤處理、取消請求等）。
-| jQuery 的 $.ajax() | 早期廣泛使用的 AJAX 方法，現在主要出現在一些老項目中。
+| HTML/CSS
+| 定義網頁的結構和樣式，使網頁具有良好的外觀和版面
+
+| JavaScript
+| 控制頁面的動態行為，操作 DOM，實現非同步資料互動
+
+| XMLHttpRequest 或 Fetch API
+| 與伺服器進行非同步通訊，實現資料的部分更新
+
+| JSON/XML
+| 瀏覽器和伺服器之間的資料格式
 |===
+
+
+
+* 實現方式有下面幾種
+|===
+| 實現方式        | 說明
+
+| XMLHttpRequest  | 最早期的 AJAX 實現方式，手動處理請求的建立、發送及回應。
+| Fetch API       | 現代化的替代方案，語法簡潔，基於 Promise 進行非同步操作。
+| Axios           | 基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友善的語法及更多功能（如錯誤處理、取消請求等）。
+| jQuery 的 $.ajax() | 早期廣泛使用的 AJAX 方法，現在主要用於一些舊有項目中。
+|===
+
+* link:https://www.keycdn.com/support/ajax-programming[參考資料7 - What Is Ajax Programming - Explained]
+* link:https://codedocs.org/what-is/ajax-programming[參考資料8 - Ajax (programming)]

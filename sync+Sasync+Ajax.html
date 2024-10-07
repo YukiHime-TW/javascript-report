@@ -548,9 +548,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>一般情況下，同步的程式碼會到 Call Stack（後進先出）內逐一執行。</p>
 </li>
-<li>
-<p><a href="https://developer.mozilla.org/en-US/docs/Glossary/Call_stack">參考資料3</a></p>
-</li>
 </ul>
 </div>
 <div class="imageblock">
@@ -616,9 +613,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p><a href="https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop">參考資料4</a></p>
-</li>
 <li>
 <p>每次 Macrotask 後還會檢查 Microtask</p>
 </li>
@@ -703,6 +697,22 @@ Macrotask - setTimeout 2</code></pre>
 </tr>
 </tbody>
 </table>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://developer.mozilla.org/en-US/docs/Glossary/Call_stack">參考資料3 - MDN Call stack</a></p>
+</li>
+<li>
+<p><a href="https://gcdeng.com/series/Javascript/javascript-deep-dive-into-event-loop">參考資料4 - Event Loop，Macrotask跟Microtask是什麼？</a></p>
+</li>
+<li>
+<p><a href="https://realdennis.medium.com/%E6%80%8E%E9%BA%BC%E7%90%86%E8%A7%A3-microtask-macrotask-7754939b3c2c">參考資料5 - 怎麼理解 microtask &amp; macrotask</a></p>
+</li>
+<li>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop">參考資料6 - MDN The event loop</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -894,7 +904,44 @@ $.ajax({
 <div class="ulist">
 <ul>
 <li>
-<p>Ajax是一套綜合性瀏覽器端技術，通過非同步請求來提升使用者體驗。</p>
+<p>Ajax是一套綜合性瀏覽器端技術，結合多種前端技術，透過非同步請求來提升使用者體驗。</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">技術</th>
+<th class="tableblock halign-left valign-top">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML/CSS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">定義網頁的結構和樣式，使網頁具有良好的外觀和版面</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JavaScript</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">控制頁面的動態行為，操作 DOM，實現非同步資料互動</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XMLHttpRequest 或 Fetch API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">與伺服器進行非同步通訊，實現資料的部分更新</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON/XML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">瀏覽器和伺服器之間的資料格式</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>實現方式有下面幾種</p>
 </li>
 </ul>
 </div>
@@ -906,35 +953,45 @@ $.ajax({
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">實現方式</th>
-<th class="tableblock halign-left valign-top">描述</th>
+<th class="tableblock halign-left valign-top">說明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">XMLHttpRequest</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">最原始的 AJAX 實現方式，手動處理請求的建立、發送及回應。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">最早期的 AJAX 實現方式，手動處理請求的建立、發送及回應。</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetch API</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">現代的替代方案，語法簡潔，基於 Promise 進行非同步操作。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">現代化的替代方案，語法簡潔，基於 Promise 進行非同步操作。</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Axios</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友好的語法及更多功能（如錯誤處理、取消請求等）。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">基於 Promise 的 HTTP 客戶端，封裝底層請求，提供更友善的語法及更多功能（如錯誤處理、取消請求等）。</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">jQuery 的 $.ajax()</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">早期廣泛使用的 AJAX 方法，現在主要出現在一些老項目中。</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">早期廣泛使用的 AJAX 方法，現在主要用於一些舊有項目中。</p></td>
 </tr>
 </tbody>
 </table>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.keycdn.com/support/ajax-programming">參考資料7 - What Is Ajax Programming - Explained</a></p>
+</li>
+<li>
+<p><a href="https://codedocs.org/what-is/ajax-programming">參考資料8 - Ajax (programming)</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-07 01:10:44 +0800
+Last updated 2024-10-07 09:25:34 +0800
 </div>
 </div>
 </body>
