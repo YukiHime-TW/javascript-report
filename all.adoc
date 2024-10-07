@@ -1255,7 +1255,7 @@ async function inner() {
     }
 
 }
-inner();
+inner(); //我抓到的錯誤 Error: 這是非同步中的錯誤
 ----
 
 2.直接在call back裡面try catch
@@ -1278,11 +1278,9 @@ async function inner() {
     }
 
 }
-inner();
+inner(); //這是callback中的錯誤
 
 ----
-
-如果要寫Promise的話，因為不是由try catch語法，而是只有用reject和catch()
 
 === Promise
 一個非同步操作的最終完成（或失敗）及其結果值。 +
