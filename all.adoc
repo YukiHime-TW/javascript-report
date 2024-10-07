@@ -2418,3 +2418,90 @@ const numbers = [1, 2, 3, 4];
 const evenNumbers = numbers.filter(num => num % 2 === 0)
 console.log(evenNumbers); // [2, 4]
 ----
+
+== 分工表格
+[cols="1,1,1", options="header"]
+|===
+| 題目 | 編輯 | 報告
+
+| Ternary Operator
+| 16
+| 17
+
+| Nullish Coalescing Operator/Assignment
+| 16
+| 16
+
+| Falsy
+| 16
+| 16
+
+| Custom Error
+| 16
+| 3
+
+| var/let/const 差異
+| 1
+| 2
+
+| Hoisting
+| 1
+| 8
+
+| Temporal Dead Zone, TDZ
+| 1
+| 1
+
+| 同步/非同步差異
+| 17
+| 17
+
+| XMLHttpRequest/fetch
+| 2
+| 16&1
+
+| AJAX
+| 17
+| 17
+
+| Promise
+| 8
+| 8
+
+| async/await
+| 8
+| 8
+
+| try…​catch 與非同步
+| 3
+| 1  
+
+| Immediately Invoked Function Expression, IIFE
+| 1
+| X  
+
+| 高階函式 Higher-Order Function
+| 16
+| X  
+
+| 閉包 Closure
+| 17
+| X  
+
+| this
+| 3
+| 3  
+
+| Arrow Function
+| 2
+| 2
+
+| 整理adoc文件
+| 8
+| X
+
+
+|===
+
+
+
