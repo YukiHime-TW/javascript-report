@@ -34,7 +34,7 @@ console.log(greeting(null)); // "Howdy, stranger"
 在上述的例子中若person為null則會被判為假值(Falsy)，因此會執行(:)後方的表達式
 
 ==== 條件鏈
-三元運算子為右相依性，因此可以使用類似if...else if...else的語法
+三元運算子也可以使用類似if...else if...else的語法
 
 [source, javascript]
 ----
@@ -273,6 +273,7 @@ class ValidationError extends Error {
     constructor(message, field) {
         super(message);
         this.name = 'ValidationError';
+        this.date = new Date();
         this.field = field; // 追蹤是哪個字段導致的錯誤
     }
 }
@@ -290,6 +291,7 @@ try {
     const user = { name: '', age: 16 };
     validateUser(user);
 } catch (err) {
+    console.log(err.date)
     console.log(`${err.message} in ${err.field} field`);
     console.log(err.stack)
 }
@@ -302,6 +304,7 @@ class AuthenticationError extends Error {
     constructor(message, reason) {
         super(message);
         this.name = 'AuthenticationError';
+        this.date = new Date();
         this.reason = reason; // 指出具體的認證問題
     }
 }
@@ -317,6 +320,7 @@ function login(username, password) {
 try {
     login('user1', 'wrongpassword');
 } catch (err) {
+    console.log(err.date)
     console.log(`Authentication failed: ${err.message} (${err.reason})`);
     console.log(err.stack)
 }
@@ -329,6 +333,7 @@ class FileReadError extends Error {
     constructor(message, fileName) {
         super(message);
         this.name = 'FileReadError';
+        this.date = new Date();
         this.fileName = fileName; // 保存出錯的文件名
     }
 }
@@ -344,8 +349,48 @@ function readFile(fileName) {
 try {
     readFile('data.txt');
 } catch (err) {
+    console.log(err.date)
     console.log(`File error: ${err.message} (File: ${err.fileName})`);
     console.log(err.stack)
+}
+----
+
+==== 深層繼承
+
+Custom Error也可以使用深層繼承達到不同領域的錯誤類別
+
+[js]
+----
+class ApplicationError extends Error { // 通用的應用程式錯誤類別
+    constructor(message) {
+        super(message);
+        this.name = 'ApplicationError';
+        this.date = new Date();
+    }
+}
+
+class ValidationError extends ApplicationError { // 數據驗證錯誤
+    constructor(message, field) {
+        super(message);
+        this.name = 'ValidationError';
+        this.field = field; // 追蹤是哪個字段導致的錯誤
+    }
+}
+
+class AuthenticationError extends ApplicationError { // 登入驗證錯誤
+    constructor(message, reason) {
+        super(message);
+        this.name = 'AuthenticationError';
+        this.reason = reason; // 指出具體的認證問題
+    }
+}
+
+class FileReadError extends ApplicationError { // 檔案文件讀取錯誤
+    constructor(message, fileName) {
+        super(message);
+        this.name = 'FileReadError';
+        this.fileName = fileName; // 保存出錯的文件名
+    }
 }
 ----
 
