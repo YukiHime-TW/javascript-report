@@ -1,0 +1,86 @@
+=== 高階函式 (Higher-Order Function)
+
+高階函式定義上是指一個function可以做為參數傳遞，或是將函式作為返回值的函式，都可以稱做為高階函數
+
+==== 簡單範例
+
+* 接受函式當作參數
+
+[js]
+----
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+function processUserInputHOF(callback) {
+    const name = "Alice";
+    return callback(name);
+}
+
+console.log(processUserInputHOF(greet)); // Hello, Alice!
+----
+
+在上述範例中processUserInputHOF接收了greet函式做為參數使用，所以processUserInputHOF是一個高階函式
+
+* 將函式作為返回值
+
+[js]
+----
+function multiplyByHOF(factor) {
+    return function(numberHOF) {
+        return numberHOF * factor;
+    };
+}
+
+const multiplyByTwo = multiplyByHOF(2); //multiplyByHOF返回一個function
+console.log(multiplyByTwo(5)); // 計算結果為10
+----
+
+在上述範例中multiplyByHOF會返回一個function，所以multiplyByHOF是一個高階函式，此時multiplyByTwo就會變成一個function並傳遞參數給numberHOF
+
+==== javaScript自帶常用的高階函式
+
+* map(): 會將數組進行疊代並將內容當作參數給函式使用，並返回一個新的數組
+
+[js]
+----
+const numbers = [1, 2, 3];
+const doubled = numbers.map(function(num){
+    return num * 2;
+});
+console.log(doubled); // [2, 4, 6]
+----
+
+上述範例中map接收了一個function，所以map()是高階函式，並且對數組的內容進行處理
+
+* filter(): 會根據給定的條件判斷將數組的內容進行過濾，並將過濾後的數組返回
+
+[js]
+----
+const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(function(num){
+    return num % 2 === 0
+});
+console.log(evenNumbers); // [2, 4]
+----
+
+在上述範例filter()也是接收function做為參數，因此它也是個高階函數
+
+* 可以使用箭頭函式(Arrow Function)的方法讓程式碼更簡潔
+[js]
+----
+const numbers = [1, 2, 3];
+const doubled = numbers.map(num => num * 2)
+console.log(doubled); // [2, 4, 6]
+
+const numbers = [1, 2, 3, 4];
+const evenNumbers = numbers.filter(num => num % 2 === 0)
+console.log(evenNumbers); // [2, 4]
+----
+
+
+
+
+
+
+
