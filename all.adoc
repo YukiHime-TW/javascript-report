@@ -105,9 +105,9 @@ let username = null;
 username ??= "Guest";
 console.log(username); // 輸出 Guest
 
-let age = 0;
-age ??= 18;
-console.log(age); // 輸出 0
+let userAge = 0;
+userAge ??= 18;
+console.log(userAge); // 輸出 0
 ----
 
 ==== (??) 與 (||)
