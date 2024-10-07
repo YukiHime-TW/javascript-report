@@ -1,10 +1,10 @@
-變數與作用域
-===========
-Author's Name
+= 變數與作用域
+
+.Author's Name
 stanleydk4
 
 == var / let / const 差異
-在JavaScript，有三種變數宣告的方式: var, let, const，其中ES6後新增了let, const，他們與原先的var最主要的差別在於:
+在JavaScript，有三種變數宣告的方式: var, let, const，其中 ES6 後新增了let, const，他們與原先的var最主要的差別在於:
 
 .區塊作用域 (Block-Level Scope)
 - let
@@ -211,6 +211,20 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
 
 == Temporal Dead Zone, TDZ
 在JavaScript中，當我們使用 let 或 const 宣告某個變數或常數時，在該變數或常數還沒有被賦予值之前會產生一段它們不能被使用的狀況，這段時間就是所謂的暫時性死區(Temporal Dead Zone)的情況。
+
+=== 為什麼有TDZ
+在 ES6 中引入了 let 和 const，它們不同於 var，因為 var 變數會被提升，但它們的值會在定義之前就可以被訪問，而這通常會導致不可預測的錯誤。為了解決這個問題，JavaScript 引入了 TDZ 概念來限制 let 和 const 變數在初始化之前的使用，從而提高代碼的安全性和可讀性。
+[source, javascript]
+----
+{
+    console.log(myDessert3); // undefined
+    var myDessert3 = "muffin";
+    console.log(myDessert3); // muffin
+}
+----
+=== TDZ的行為
+當一個變數使用 let 或 const 宣告時，它在作用域的最頂部被"標記"為已存在，但不會被初始化。只有當執行到宣告語句時，變數才會被初始化。在變數初始化之前，它位於 TDZ 中，不能被訪問。
+
 [source, javascript]
 ----
 {
@@ -234,21 +248,23 @@ console.log(myDessert); // ReferenceError: myDessert is not defined
     
 }
 ----
-=== 總結
-var / let / const比較:
-[cols="3*", options="header"]
+=== TDZ小結
+- TDZ 是指在變數被宣告和初始化之間的時間段，這段時間內變數不可訪問。
+- TDZ 只與 let 和 const 宣告相關。
+- 在 TDZ 期間訪問變數會拋出 ReferenceError 錯誤。
+- var 不受 TDZ 限制，因為它會被提升並初始化為 undefined。
+
+== 總結
+
+[cols="1,1,1,1", options="header"]
 |===
-|特性 |var |let/const
+| 特性                        | `var`                        | `let`                          | `const`
 
-|作用域
-|函式作用域
-|區塊作用域
-
-|宣告前存取
-|undefined
-|ReferenceError
-
-|重複宣告
-|可以重複宣告
-|不可以重複宣告
+| **作用域（Scope）**          | 函數作用域    | 區塊作用域        | 區塊作用域 
+| **變數提升（Hoisting）**     | 是，提升至作用域頂部，初始值為 `undefined` | 是，提升但未初始化，位於暫時性死區 (TDZ) | 是，提升但未初始化，位於 TDZ
+| **可重新賦值（Reassignment）**| 可以重新賦值                  | 可以重新賦值                    | 不可重新賦值
+| **必須在宣告時賦值**         | 否                           | 否                              | 是
+| **全域物件屬性**             | 是 | 否                              | 否
+| **暫時性死區（TDZ）**        | 否                           | 是                              | 是
+| **初始值**                   | `undefined` （若沒有賦值）   | 不可使用未初始化的變數 (TDZ)     | 必須在宣告時賦值，否則報錯
 |===
