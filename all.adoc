@@ -1330,6 +1330,7 @@ async function inner() {
 inner(); //這是callback中的錯誤
 
 ----
+
 [source,javascript]
 ----
 
@@ -1352,6 +1353,7 @@ function inner() {
 inner(); //這是callback中的錯誤
 
 ----
+
 === Promise
 一個非同步操作的最終完成（或失敗）及其結果值。 +
 
