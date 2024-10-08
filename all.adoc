@@ -1275,6 +1275,14 @@ try{
 //一定會執行的區塊
 }
 ----
+[source,javascript]
+----
+try {
+    throw "Error!";
+} catch (e) {
+    console.log(e); // 输出: Error!
+}
+----
 
 ==== **try catch 與非同步**
 
@@ -1322,7 +1330,28 @@ async function inner() {
 inner(); //這是callback中的錯誤
 
 ----
+[source,javascript]
+----
 
+function callbackrun() {
+    console.log('run')
+    setTimeout(() => {
+        try {
+            throw new Error("這是callback中的錯誤");
+        } catch (e) {
+            console.log('我抓到的錯誤', e)
+        }
+    }, 1000)
+
+}
+function inner() {
+
+    callbackrun();
+
+}
+inner(); //這是callback中的錯誤
+
+----
 === Promise
 一個非同步操作的最終完成（或失敗）及其結果值。 +
 
