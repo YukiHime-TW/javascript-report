@@ -15,9 +15,12 @@
 
 ## 第一次報告回饋(10/8)
 - 雜項:
+
     都有太緊張的問題，建議放鬆
 
     var是可以被重複宣告且重複賦值的，所以在Ian這邊寫程式不要寫var，可能會造成變數汙染
+
+    **叫其他人的時候，不要叫同仁，叫組員**
 
     Q1: 在console裡執行程式最後產生的undefined是甚麼?
     console.log()的回傳值是undefined，所以在console裡執行程式最後會跳出undefined
@@ -67,3 +70,17 @@
     Q3: var有TDZ的問題嗎?
 
     Q4: 可以實操看看Q2的問題嗎?
+
+- Arrow Function
+
+    Q1: arrowWithCallBack2()的this到底是指向哪個this?
+
+    Q2: 為甚麼要先講Arrow Function再講this?
+
+- this
+
+    call()跟apply()的範例程式碼要分開先寫好
+
+    Q1: 要怎麼用Lexical Enviorment解釋函數run()?
+
+    Q2: this的箭頭函數的父作用域在哪裡?
