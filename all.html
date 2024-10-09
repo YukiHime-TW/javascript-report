@@ -1920,7 +1920,7 @@ xhr.send();</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">fetch('https://jsonplaceholder.typicode.com/posts/1')
-    .then(response =&gt; response.json()) // 解析為 JSON 格式
+    .then(response =&gt; response.json())
     .then(data =&gt; console.log(data)) // 成功時顯示資料
     .catch(error =&gt; console.error('Error:', error)); // 處理錯誤</code></pre>
 </div>
@@ -2389,6 +2389,15 @@ try區塊後需要有catch 或 finally。</p>
 }</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">try {
+    throw "Error!";
+} catch (e) {
+    console.log(e); // 输出: Error!
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_try_catch_與非同步"><strong>try catch 與非同步</strong></h4>
@@ -2433,6 +2442,27 @@ async function inner() {
     } catch (e) {
         console.log('我抓到的錯誤', e)
     }
+
+}
+inner(); //這是callback中的錯誤</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">function callbackrun() {
+    console.log('run')
+    setTimeout(() =&gt; {
+        try {
+            throw new Error("這是callback中的錯誤");
+        } catch (e) {
+            console.log('我抓到的錯誤', e)
+        }
+    }, 1000)
+
+}
+function inner() {
+
+    callbackrun();
 
 }
 inner(); //這是callback中的錯誤</code></pre>
@@ -3961,7 +3991,7 @@ console.log(evenNumbers); // [2, 4]</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-08 09:01:51 +0800
+Last updated 2024-10-09 10:18:36 +0800
 </div>
 </div>
 </body>

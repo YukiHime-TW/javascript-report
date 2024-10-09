@@ -940,7 +940,7 @@ xhr.send();
 [source,javascript]
 ----
 fetch('https://jsonplaceholder.typicode.com/posts/1')
-    .then(response => response.json()) // 解析為 JSON 格式
+    .then(response => response.json()) 
     .then(data => console.log(data)) // 成功時顯示資料
     .catch(error => console.error('Error:', error)); // 處理錯誤
 ----
