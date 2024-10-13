@@ -1993,7 +1993,7 @@ function callGreet(arg1,arg2) {
 }
 
 const user = { name: 'Diana' };
-callGreet.call(user,'my name','is'); // 輸出 "Hello, Diana"
+callGreet.call(user,'my name','is'); // 輸出 "Hello, my name is Diana"
 
 ----
 
@@ -2007,7 +2007,7 @@ function applyGreet(arg1,arg2) {
 }
 
 const user = { name: 'Diana' };
-applyGreet.apply(user,['my name','is']); // 輸出 "Hello, Diana"
+applyGreet.apply(user,['my name','is']); // 輸出 "Hello, my name is Diana"
 
 ----
 
