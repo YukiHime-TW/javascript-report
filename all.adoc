@@ -1855,6 +1855,165 @@ getData("https://example.com/data");
 
 == 函式
 
+
+----
+
+=== this
+
+[cols="1,1", options="header"]
+|===
+| 上下文 | 描述
+
+| 全域物件
+| 在全域範圍內（如瀏覽器中），`this` 指向全域物件 `window`。
+
+| 函數
+| 在普通函數中，`this` 的值取決於如何調用函數：
+  - 非嚴格模式：`this` 指向全域物件。
+  - 嚴格模式：`this` 的值為 `undefined`。
+
+| 物件方法
+| 當函數作為對象的方法調用時，`this` 指向該物件。
+| 建構子
+| 在建構函數中，`this` 指向新建立的實體。
+| 事件處理器
+| 在事件處理器中，`this` 指向觸發事件的 DOM 元素。
+| 箭頭函數 | 箭頭函數不具有自己的 this，它會從父作用域繼承 this。
+| bind()、call() 和 apply() | 這些方法可以顯式設置 this 的值：
+
+bind() 返回一個新函數，this 永久綁定到指定的對象。
+call() 和 apply() 立即調用函數並指定 this 的值。
+|===
+
+==== 全域物件
+
+[source,javascript]
+----
+
+console.log(this === window)  //true
+
+----
+
+
+==== 函數
+
+[source,javascript]
+----
+
+ function run() {
+    console.log(this === window);
+}
+run(); //true
+
+----
+
+==== 物件方法
+
+[source,javascript]
+----
+
+const obj = {
+    name: 'Alice',
+    greet() {
+        console.log('Hello, ' + this.name);
+    }
+};
+
+obj.greet(); // 輸出 "Hello, Alice"
+
+----
+
+==== 建構子
+
+[source,javascript]
+----
+
+function Person(name) {
+    this.name = name;
+}
+
+const person1 = new Person('Bob');
+console.log(person1.name); // 輸出 "Bob"
+
+----
+
+
+==== 事件處理器
+
+[source,javascript]
+----
+<button id="myButton">Click me</button>
+<p id="tar"> </p>
+<script>
+    document.getElementById('myButton').addEventListener('click', function() {
+   document.getElementById('tar').innerHTML=this
+        console.log(this); // 指向被點擊的 button 元素
+    });
+</script>
+----
+
+==== this的箭頭函數
+
+[source,javascript]
+----
+
+const objarr = {
+    name: 'Eva',
+    greet: function() {
+        const inner = () => {
+            console.log('Hello, ' + this.name);
+        };
+        inner();
+    }
+};
+
+objarr.greet(); // 輸出 "Hello, Eva"
+
+----
+
+==== bind()、call() 和 apply()
+
+* bind(bindObj) 
+
+[source,javascript]
+----
+const bindobj = { name: 'Charlie' };
+function sayHi() {
+    console.log('Hi, ' + this.name);
+}
+
+const boundSayHi = sayHi.bind(bindobj);
+boundSayHi(); // 輸出 "Hi, Charlie"
+----
+
+* call(bindObj,functionArg1,functionArg2...)
+
+[source,javascript]
+----
+
+function callGreet(arg1,arg2) {
+  console.log('Hello, '+arg1 +' '+ arg2 +' '+ this.name);
+}
+
+const user = { name: 'Diana' };
+callGreet.call(user,'my name','is'); // 輸出 "Hello, Diana"
+
+----
+
+* apply(bindObj,[functionArg])
+
+[source,javascript]
+----
+
+function applyGreet(arg1,arg2) {
+    console.log('Hello, '+arg1 +' '+ arg2 +' '+ this.name);
+}
+
+const user = { name: 'Diana' };
+applyGreet.apply(user,['my name','is']); // 輸出 "Hello, Diana"
+
+----
+
 === Arrow Function
 箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
 
@@ -1999,140 +2158,7 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 
 ----
 
-=== this
 
-[cols="1,1", options="header"]
-|===
-| 上下文 | 描述
-
-| 全域物件
-| 在全域範圍內（如瀏覽器中），`this` 指向全域物件 `window`。
-
-| 函數
-| 在普通函數中，`this` 的值取決於如何調用函數：
-  - 非嚴格模式：`this` 指向全域物件。
-  - 嚴格模式：`this` 的值為 `undefined`。
-
-| 物件方法
-| 當函數作為對象的方法調用時，`this` 指向該物件。
-| 建構子
-| 在建構函數中，`this` 指向新建立的實體。
-| 事件處理器
-| 在事件處理器中，`this` 指向觸發事件的 DOM 元素。
-| 箭頭函數 | 箭頭函數不具有自己的 this，它會從父作用域繼承 this。
-| bind()、call() 和 apply() | 這些方法可以顯式設置 this 的值：
-
-bind() 返回一個新函數，this 永久綁定到指定的對象。
-call() 和 apply() 立即調用函數並指定 this 的值。
-|===
-
-==== 全域物件
-
-[source,javascript]
-----
-
-console.log(this === window)  //true
-
-----
-
-
-==== 函數
-
-[source,javascript]
-----
-
- function run() {
-    console.log(this === window);
-}
-run(); //true
-
-----
-
-==== 物件方法
-
-[source,javascript]
-----
-
-const obj = {
-    name: 'Alice',
-    greet() {
-        console.log('Hello, ' + this.name);
-    }
-};
-
-obj.greet(); // 輸出 "Hello, Alice"
-
-----
-
-==== 建構子
-
-[source,javascript]
-----
-
-function Person(name) {
-    this.name = name;
-}
-
-const person1 = new Person('Bob');
-console.log(person1.name); // 輸出 "Bob"
-
-----
-
-
-==== 事件處理器
-
-[source,javascript]
-----
-<button id="myButton">Click me</button>
-<p id="tar"> </p>
-<script>
-    document.getElementById('myButton').addEventListener('click', function() {
-   document.getElementById('tar').innerHTML=this
-        console.log(this); // 指向被點擊的 button 元素
-    });
-</script>
-----
-
-==== this的箭頭函數
-
-[source,javascript]
-----
-
-const objarr = {
-    name: 'Eva',
-    greet: function() {
-        const inner = () => {
-            console.log('Hello, ' + this.name);
-        };
-        inner();
-    }
-};
-
-objarr.greet(); // 輸出 "Hello, Eva"
-
-----
-
-==== bind()、call() 和 apply()
-
-[source,javascript]
-----
-const bindobj = { name: 'Charlie' };
-function sayHi() {
-    console.log('Hi, ' + this.name);
-}
-
-const boundSayHi = sayHi.bind(bindobj);
-boundSayHi(); // 輸出 "Hi, Charlie"
-
-function greet() {
-    console.log('Hello, ' + this.name);
-}
-
-const user = { name: 'Diana' };
-greet.call(user); // 輸出 "Hello, Diana"
-greet.apply(user); // 輸出 "Hello, Diana"
-
-----
 
 === 立即調用函式 IIFE (Immediately Invoked Function Expression)
 JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
