@@ -2019,7 +2019,7 @@ applyGreet.apply(user,['my name','is']); // 輸出 "Hello, my name is Diana"
 ----
 
 === Arrow Function
-箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一些傳統函數在處理 this 關鍵字時的問題。
+箭頭函數（Arrow Function）是 JavaScript 在 ES6（ECMAScript 2015）中引入的函數表示法。它提供了一種更簡短的語法來定義函數，同時還解決了一般函數在處理 this 關鍵字時的問題。
 
 
 * 語法樣貌
@@ -2050,7 +2050,7 @@ applyGreet.apply(user,['my name','is']); // 輸出 "Hello, my name is Diana"
 
 這邊使用介紹this時所用的範例 
 
-我們可以看到在objarr中定義了greet()並使用了傳統方法去建構方法，此時greet**建立了一個作用域來讓使用arrow function建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
+我們可以看到在objarr中定義了greet()並使用了**一般函式建構方法**去建構方法，此時greet()**建立了一個作用域來讓使用箭頭函式建構的inner()去繼承this**。而greet**屬於**objarr物件，所以此處this可以正確的指向到name。
 [source,javascript]
 ----
 
@@ -2069,7 +2069,7 @@ objarr.greet(); // 輸出 "Hello, Eva"
 
 ----
 
-如果把greet也改成用arrow function的方式宣告的話
+如果把greet也改成用箭頭函式的方式宣告的話
 [source, javascript]
 ----
 const objarr2 = {
@@ -2103,7 +2103,7 @@ const awcb = new arrowWithCallBack();
 
 ----
 
-若是使用傳統方式的話，需使用bind()綁定後再做使用
+若是使用一般函數的話，需使用bind()綁定後再做使用
 
 [source,javascript]
 ----
@@ -2134,7 +2134,7 @@ const foo = new Foo(); // TypeError: Foo is not a constructor
 * 沒有 arguments 參數
 ** 箭頭函數沒有自己的arguments參數可以使用，但可以改用傳送..arg的方式(Rest Parameters)來進行
 
-.傳統函數
+.一般函數
 [source, javascript]
 ----
 function func1(a, b, c) {
@@ -2162,7 +2162,57 @@ updateICard(100, 20, 45, 40); // [100, 20, 45, 40]
 
 ----
 
+* 總結
+以下是對Arrow Function與傳統Function的比較表格
+[options="header", cols="1,3,3", frame="all", grid="all"]
+|===
+| **特性** | **普通函數（一般函數）** | **箭頭函數（Arrow Functions）**
 
+| `this` 綁定
+| 動態綁定，取決於函數的調用方式。可以使用 `call`、`apply` 或 `bind` 顯式指定 `this`。
+| 靜態綁定，繼承自定義時的外部詞法環境的 `this`，不會被調用方式改變。
+
+| `arguments` 物件 (類陣列物件)
+| 擁有自己的 `arguments` 物件，可以訪問所有傳遞給函數的參數。
+| 沒有自己的 `arguments` 物件。如果需要，可以使用剩餘參數（Rest Parameters）來代替。
+
+| 作為構造函數使用
+| 可以作為構造函數使用，支持 `new` 關鍵字，並且有 `prototype` 屬性。
+| 不能作為構造函數使用，不能與 `new` 一起使用，沒有 `prototype` 屬性。
+
+| 提升（Hoisting）
+| 函數聲明會被提升到作用域頂部，可以在函數定義之前調用。函數表達式則不會被提升。
+| 箭頭函數作為 `函數表達式` 的一部分，不會被提升，必須在定義後才能調用。
+
+| 語法簡潔性
+| 語法相對較為冗長，特別是在定義簡單函數時。
+| 語法更加簡潔，特別適用於短小的函數和回調函數。
+
+| 作為物件方法
+| 適合作為物件的方法，`this` 可以指向該物件。
+| 不適合作為物件的方法，`this` 不會指向該物件，而是繼承自外部上下文。
+
+| 使用場景
+| - 需要動態 `this` 綁定的場景
+- 需要使用 `arguments` 對象
+- 需要作為構造函數使用
+- 定義複雜的函數邏輯
+| - 作為回調函數，特別是在需要保持外部 `this` 的場景
+- 定義短小、簡潔的函數
+- 函數式編程，如陣列方法的回調函數
+
+| 閉包（Closures）
+| 可以形成閉包，捕獲外部詞法環境的變量。
+| 也可以形成閉包，並且 `this` 綁定更加直觀，避免了傳統函數中常見的 `this` 相關問題。
+
+| `super` 和 `new.target`
+| 普通函數可以使用 `super` 和 `new.target`（在子類中）。
+| 箭頭函數無法使用 `super` 和 `new.target`。
+
+| `prototype` 屬性
+| 擁有 `prototype` 屬性，可
+
+|===
 
 === 立即調用函式 IIFE (Immediately Invoked Function Expression)
 JavaScript 中的立即調用函式 (IIFE，Immediately Invoked Function Expression)，指的是一種在定義時立即執行的匿名函式，通常用於創建一個局部作用域，避免全局污染。
