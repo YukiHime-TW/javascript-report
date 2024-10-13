@@ -2470,7 +2470,7 @@ initialize(); // 不會再次執行
 
 === 高階函式 (Higher-Order Function)
 
-高階函式定義上是指一個function可以做為參數傳遞，或是將函式作為返回值的函式，都可以稱做為高階函數
+高階函式定義上是指一個function可以做為參數傳遞，或是將函式作為返回值的函式，都可以稱做為高階函式
 
 ==== 簡單範例
 
@@ -2536,6 +2536,15 @@ console.log(evenNumbers); // [2, 4]
 
 在上述範例filter()也是接收function做為參數，因此它也是個高階函數
 
+* setTimeout
+[source,javascript]
+----
+setTimeout(function () {
+    console.log("這是一個回調函數，在2秒後執行");
+}, 2000);
+----
+經常會使用的的setTimeout也是個高階函式，傳入的函式會根據設定的秒數後執行
+
 * 可以使用箭頭函式(Arrow Function)的方法讓程式碼更簡潔
 [source,javascript]
 ----
@@ -2546,6 +2555,10 @@ console.log(doubled); // [2, 4, 6]
 const numbers = [1, 2, 3, 4];
 const evenNumbers = numbers.filter(num => num % 2 === 0)
 console.log(evenNumbers); // [2, 4]
+
+setTimeout(() => {
+    console.log("這是一個回調函數，在2秒後執行");
+}, 2000);
 ----
 
 == 分工表格
