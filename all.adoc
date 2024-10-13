@@ -1855,9 +1855,6 @@ getData("https://example.com/data");
 
 == 函式
 
-
-----
-
 === this
 
 [cols="1,1", options="header"]
