@@ -71,6 +71,8 @@ if (score >= 90) {
 console.log(grade); // "B"
 ----
 
+*NOTE:* 雖然js支援三元運算子中又包三元運算子，但通常在開發上不建議這麼做，因為透過一些不同的IDE可能會造成不同的縮排，導致閱讀不順
+
 === Nullish Coalescing Operator(??)/Assignment(??=)
 javaScript 的 Nullish Coalescing Operator (??) 和 Nullish Coalescing Assignment (??=) 是用來處理 null 或 undefined 值的運算子，常用於提供默認值或簡化賦值操作。
 
@@ -127,7 +129,7 @@ console.log(result2); // 輸出10
 
 上述範例中由於??只會檢查null或undefined，因此輸出結果依然是1，而||會檢查Falsy，由於0是屬於Falsy，所以會賦予右側的值給result2，結果輸出就會是10
 
-NOTE: ??與||同樣為短路運算子，因此??在判斷左側不為null或undefined時，就不會再執行右側的程式
+*NOTE:* ??與||同樣為短路運算子，因此??在判斷左側不為null或undefined時，就不會再執行右側的程式
 
 === Falsy
 在 JavaScript 中，Falsy 值是指在布林值轉換時會被判定為 false 的值。當在需要布林值的地方（如條件判斷）使用這些值時，皆會被視為 false，其餘的則會轉成true(Truthy)
