@@ -1072,6 +1072,10 @@ xhr.send(null);
 
 JavaScript 的 fetch API 是一個由 WHATWG Fetch Standard 所定義的**能獲取跨網路資源的介面**，用於在網頁中進行網路請求。
 
+NOTE: WHATWG（Web Hypertext Application Technology Working Group），是一個以推動 **HTML標準** 為目的而成立的組織。在2004年，由Apple公司、Mozilla基金會和Opera軟體公司所組成。 +
+所以其實Fetch是HTML的標準而不是JavaScript。
+
+
 .Fetch的介面的核心
 [cols="1,3"]
 |===
@@ -1091,7 +1095,9 @@ JavaScript 的 fetch API 是一個由 WHATWG Fetch Standard 所定義的**能獲
 |Body 介面是 Request 和 Response 的基礎，提供多種方法來處理請求和回應的內容。常用的方法包括 .json() 將回應解析為 JSON，.text() 解析為文字，.blob() 解析為二進制大對象（Blob）等。
 |===
 
-* 要呼叫fetch()方法只要在 Global環境下可直接呼叫fetch方法即可
+* 呼叫fetch()方法
+
+目前基本上每家瀏覽器廠商都有實作Fetch方法(除了IE)，所以在 Global環境下直接呼叫fetch方法就能使用Fetch。
 
 .如何使用fetch取得資源
 [source, javascript]
