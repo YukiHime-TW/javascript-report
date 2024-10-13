@@ -1116,7 +1116,7 @@ fetch(request) //只有url就會預設這個請求的HTTP請求方法是GET。
   });
 ----
 
-Fetch()基於Promise，允許開發者以更清晰和簡潔的方式處理非同步操作。但需要注意的是fetch() 回傳的 promise 物件只會在網路中斷或著其他導致Request中斷的狀況下才會出現rejected狀態。這也就是說，只要伺服器有回傳，它的回傳就都會是fulfilled狀態。
+NOTE: Fetch()回傳的Object為Promise物件，而Fetch只會在網路中斷或著其他導致Request中斷的狀況下才會將狀態轉換為**rejected**狀態。這也就是說，只要伺服器**有回傳**，它的回傳就都會是**fulfilled**狀態。
 
 ==== 直接使用XMLHttpRequest物件的問題與使用fetch的對比
 
